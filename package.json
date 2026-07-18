@@ -2,14 +2,13 @@
   "name": "mapa.meshcorepolska.org",
   "version": "1.0.0",
   "private": true,
-  "description": "Official MeshCore Map (frontend)",
   "homepage": "https://mapa.meshcorepolska.org",
   "bugs": {
-    "url": "https://github.com/meshcore-pl/mapa.meshcorepolska.org/issues"
+    "url": "https://github.com/meshcore-pl/map/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meshcore-pl/mapa.meshcorepolska.org.git"
+    "url": "git+https://github.com/meshcore-pl/map.git"
   },
   "license": "MIT",
   "author": "Sefinek <contact@sefinek.net> (https://sefinek.net)",
