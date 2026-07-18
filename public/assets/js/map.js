@@ -200,15 +200,13 @@ const getTable = node => '<table class="node-info"><tbody>' +
 const getDeletionMailUrl = node => {
 	const deletionMailUrl = new URL('mailto:recrof@gmail.com');
 	deletionMailUrl.searchParams.append('subject', 'MeshCore Map node deletion request');
-	deletionMailUrl.searchParams.append('body', [
-		'Please delete my node(s) from MeshCore Map database',
-		'MeshCore link(s) or Public key(s):',
-		'',
-		node ? node.public_key : '',
-		'',
-		'*** IMPORTANT ***',
-		'if you have multiple nodes to delete, put them into single email, delimited by newline. public key is enough, you don\'t need to add name or screenshot of the node.',
-	].join('\n'));
+	deletionMailUrl.searchParams.append('body', `Please delete my node(s) from MeshCore Map database
+MeshCore link(s) or Public key(s):
+
+${node ? node.public_key : ''}
+
+*** IMPORTANT ***
+if you have multiple nodes to delete, put them into single email, delimited by newline. public key is enough, you don't need to add name or screenshot of the node.`);
 
 	return deletionMailUrl.toString().replaceAll('+', '%20').replaceAll('\n', '%0A');
 };
@@ -477,9 +475,9 @@ const renderStats = () => {
 
 	statsCounts.innerHTML = `
 		<span>razem: <b>${nodes.length}</b></span>&nbsp;|
-		<svg class="icon pointer-help" title="Liczba węzłów typu klient"><use href="/assets/icons/icons.svg#icon-user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
-		<svg class="icon pointer-help" title="Liczba węzłów typu repeater"><use href="/assets/icons/icons.svg#icon-signal"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
-		<svg class="icon pointer-help" title="Liczba serwerów pokoju"><use href="/assets/icons/icons.svg#icon-users"></use></svg><b>${(byType[3] || []).length}</b>
+		<svg class="icon pointer-help"><use href="/assets/icons/icons.svg#icon-user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
+		<svg class="icon pointer-help"><use href="/assets/icons/icons.svg#icon-signal"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
+		<svg class="icon pointer-help"><use href="/assets/icons/icons.svg#icon-users"></use></svg><b>${(byType[3] || []).length}</b>
 		<span class="pointer-help" title="Węzły dodane w ciągu ostatnich 24 godzin">24h: <b>${c1}</b></span>
 		<span class="pointer-help" title="Węzły dodane w ciągu ostatnich 7 dni">7d: <b>${c7}</b></span>
 		<span class="pointer-help" title="Węzły dodane w ciągu ostatnich 30 dni">30d: <b>${c30}</b></span>
@@ -628,7 +626,7 @@ const downloadNodes = async region => {
 		const nodesBlob = await nodesReq.blob();
 		const nodes = unpack(await nodesBlob.arrayBuffer());
 
-		getPresets();
+		void getPresets();
 
 		const byType = {};
 		const freqSet = new Set();
@@ -672,7 +670,7 @@ const downloadNodes = async region => {
 		applyDownloadedNodes(nodesCache[region]);
 	}
 	catch (e) {
-		alert('Wystąpił błąd podczas wczytywania węzłów mapy.');
+		alert('Wystąpił nieoczekiwany błąd podczas wczytywania danych. Spróbuj ponownie.');
 		console.error(e);
 	}
 	finally {
@@ -727,9 +725,7 @@ clusteringZoomInput.addEventListener('input', () => {
 
 clearFiltersBtn.addEventListener('click', clearFilters);
 
-regionToggle.addEventListener('click', () => {
-	setRegion(state.region === 'all' ? 'pl' : 'all');
-});
+regionToggle.addEventListener('click', () => setRegion(state.region === 'all' ? 'pl' : 'all'));
 
 settingsToggle.addEventListener('click', () => {
 	settingsPanel.hidden = !settingsPanel.hidden;
@@ -749,7 +745,7 @@ legendToggle.addEventListener('click', () => {
 
 document.addEventListener('click', e => {
 	const copyBtn = e.target.closest('.copy-link-btn');
-	if (copyBtn) navigator.clipboard.writeText(copyBtn.dataset.meshLink);
+	if (copyBtn) void navigator.clipboard.writeText(copyBtn.dataset.meshLink);
 });
 
 document.addEventListener('click', e => {
