@@ -4,8 +4,6 @@ import * as ntools from './node-utils.js';
 import { initModal } from './modal.js';
 import { initLegendPanel } from './legend.js';
 import { initStatsModal } from './stats.js';
-import { formatDateTime } from './date-format.js';
-import { truncateKey } from './key-format.js';
 
 const apiUrl = region => `/api/v1/nodes?region=${region}`;
 
@@ -144,21 +142,21 @@ const columns = {
 		label: 'Dodano',
 		value: val => {
 			const dt = new Date(val);
-			return `<time datetime="${val}" title="${formatDateTime(dt)}">${timeAgo(dt.getTime())}</time>`;
+			return `<time datetime="${val}" title="${ntools.formatDateTime(dt)}">${timeAgo(dt.getTime())}</time>`;
 		},
 	},
 	updated_date: {
 		label: 'Zaktualizowano',
 		value: val => {
 			const dt = new Date(val);
-			return `<time datetime="${val}" title="${formatDateTime(dt)}">${timeAgo(dt.getTime())}</time>`;
+			return `<time datetime="${val}" title="${ntools.formatDateTime(dt)}">${timeAgo(dt.getTime())}</time>`;
 		},
 	},
 	public_key: {
 		label: 'Klucz publiczny',
 		value: val => `
 			<span class="pubkey-cell">
-				<span class="pubkey-text" title="${escapeHtml(val)}">${escapeHtml(truncateKey(val))}</span>
+				<span class="pubkey-text" title="${escapeHtml(val)}">${escapeHtml(ntools.truncateKey(val))}</span>
 				<button type="button" class="copy-icon-btn" title="Kopiuj klucz publiczny" data-copy-value="${escapeHtml(val)}">
 					<svg class="icon" aria-hidden="true"><use href="/assets/icons/icons.svg#icon-copy"></use></svg>
 				</button>
@@ -529,7 +527,7 @@ function renderSearchResults() {
 			<svg width="32" height="32"><use href="/assets/icons/node-types.svg#${nodeTypeIconNames[node.type]}-plain"></use></svg>
 			<div class="search-text">
 				<h6>${highlightString(node.adv_name, state.search)}</h6>
-				<div class="search-pkey">${highlightString(truncateKey(node.public_key), state.search)}</div>
+				<div class="search-pkey">${highlightString(ntools.truncateKey(node.public_key), state.search)}</div>
 			</div>
 		</li>
 	`).join('');

@@ -28,3 +28,7 @@ export const getNameIconLabel = name => {
 
 	return match[0];
 };
+
+export const formatDateTime = date => date.toLocaleString(navigator.languages || navigator.language);
+
+export const truncateKey = (key, visibleChars = 10) => `${key.slice(0, visibleChars)}...${key.slice(-visibleChars)}`;
