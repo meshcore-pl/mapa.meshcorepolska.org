@@ -742,7 +742,10 @@ a:active {
 }
 
 .leaflet-popup-tip {
-	background: var(--bg-panel-solid);
+	background: var(--bg-panel);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	box-shadow: none;
 }
 
 .leaflet-popup-close-button {
