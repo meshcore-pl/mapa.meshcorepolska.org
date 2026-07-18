@@ -1,5 +1,5 @@
 /* global L, QRCode */
-import { unpack } from '../../vendor/msgpackr/msgpackr.js';
+import { unpack } from '../vendor/msgpackr/msgpackr.js';
 import * as ntools from './node-utils.js';
 import { initModal } from './modal.js';
 import { initLegendPanel } from './legend.js';
@@ -130,7 +130,7 @@ const withCopyButton = (displayHtml, copyValue, btnTitle, textTitle = '') => `
 	<span class="copy-cell">
 		<span class="copy-cell-text"${textTitle ? ` title="${textTitle}"` : ''}>${displayHtml}</span>
 		<button type="button" class="copy-icon-btn" title="${btnTitle}" data-copy-value="${escapeHtml(copyValue)}">
-			<svg class="icon" aria-hidden="true"><use href="/assets/icons/icons.svg#copy"></use></svg>
+			<svg class="icon" aria-hidden="true"><use href="/icons/icons.svg#copy"></use></svg>
 		</button>
 	</span>`;
 
@@ -377,7 +377,7 @@ const nodeTypeIconNames = { 1: 'client', 2: 'repeater', 3: 'room-server', 4: 'se
 
 const icons = Object.fromEntries(['none', 'recent', 'stale', 'old', 'extinct'].map(color => [color,
 	Object.fromEntries([2, 3, 4].map(id => [id, L.divIcon({
-		html: `<svg width="32" height="32"><use href="/assets/icons/node-types.svg#${nodeTypeIconNames[id]}"></use></svg>`,
+		html: `<svg width="32" height="32"><use href="/icons/node-types.svg#${nodeTypeIconNames[id]}"></use></svg>`,
 		className: `svg-node-icon update-${color}`,
 		iconSize: [32, 32],
 		iconAnchor: [17, 17],
@@ -386,6 +386,9 @@ const icons = Object.fromEntries(['none', 'recent', 'stale', 'old', 'extinct'].m
 ]));
 
 const loadingOverlay = document.getElementById('loading-overlay');
+const loadingStatus = document.getElementById('loading-status');
+const loadingProgressBar = document.getElementById('loading-progress-bar');
+const loadingMeta = document.getElementById('loading-meta');
 const statsCounts = document.getElementById('stats-counts');
 const regionToggle = document.getElementById('region-toggle');
 const regionToggleLabel = document.getElementById('region-toggle-label');
@@ -467,6 +470,27 @@ attachClusterClickHandler(markerClusterGroup);
 
 const setLoading = loading => {
 	loadingOverlay.hidden = !loading;
+	if (loading) {
+		loadingStatus.textContent = '';
+		loadingProgressBar.style.width = '0%';
+		loadingMeta.textContent = '';
+	}
+};
+
+const setLoadingStatus = text => {
+	loadingStatus.textContent = text;
+};
+
+const renderLoadingProgress = (receivedBytes, totalBytes, elapsedSec) => {
+	const speed = elapsedSec > 0 ? receivedBytes / elapsedSec : 0;
+	const speedText = `${ntools.formatBytes(speed)}/s`;
+
+	if (totalBytes) {
+		loadingProgressBar.style.width = `${Math.min(100, (receivedBytes / totalBytes) * 100)}%`;
+		loadingMeta.textContent = `${ntools.formatBytes(receivedBytes)} / ${ntools.formatBytes(totalBytes)} · ${speedText}`;
+	} else {
+		loadingMeta.textContent = `${ntools.formatBytes(receivedBytes)} · ${speedText}`;
+	}
 };
 
 const positionDropdown = el => {
@@ -566,9 +590,9 @@ const renderStats = () => {
 
 	statsCounts.innerHTML = `
 		<span class="pointer-help" title="Łączna liczba wszystkich węzłów">razem: <b>${nodes.length}</b></span>&nbsp;|
-		<svg class="icon pointer-help" title="Łączna liczba klientów"><use href="/assets/icons/icons.svg#user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
-		<svg class="icon icon-filled pointer-help" title="Łączna liczba repeaterów"><use href="/assets/icons/node-types.svg#repeater-plain"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
-		<svg class="icon pointer-help" title="Łączna liczba serwerów pokoju"><use href="/assets/icons/icons.svg#message"></use></svg><b>${(byType[3] || []).length}</b>
+		<svg class="icon pointer-help" title="Łączna liczba klientów"><use href="/icons/icons.svg#user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
+		<svg class="icon icon-filled pointer-help" title="Łączna liczba repeaterów"><use href="/icons/node-types.svg#repeater-plain"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
+		<svg class="icon pointer-help" title="Łączna liczba serwerów pokoju"><use href="/icons/icons.svg#message"></use></svg><b>${(byType[3] || []).length}</b>
 	`;
 
 	statsModal.render();
@@ -592,7 +616,7 @@ function renderSearchResults() {
 	if (!searchResultsEl.hidden) positionDropdown(searchResultsEl);
 	searchResultsEl.innerHTML = results.map(node => `
 		<li>
-			<svg width="32" height="32"><use href="/assets/icons/node-types.svg#${nodeTypeIconNames[node.type]}-plain"></use></svg>
+			<svg width="32" height="32"><use href="/icons/node-types.svg#${nodeTypeIconNames[node.type]}-plain"></use></svg>
 			<div class="search-text">
 				<h6>${highlightString(node.adv_name, state.search)}</h6>
 				<div class="search-pkey">${highlightString(ntools.truncateKey(node.public_key), state.search)}</div>
@@ -683,7 +707,7 @@ const inflateNode = node => {
 const nodesCache = {};
 
 const renderLegendUpdatedAt = dataUpdatedAt => {
-	legendUpdatedAtEl.textContent = dataUpdatedAt ? new Date(dataUpdatedAt).toLocaleTimeString(navigator.languages || navigator.language) : '-';
+	legendUpdatedAtEl.textContent = dataUpdatedAt ? ntools.formatTime(new Date(dataUpdatedAt)) : '-';
 };
 
 const applyDownloadedNodes = cached => {
@@ -717,12 +741,37 @@ const downloadNodes = async region => {
 
 	try {
 		setLoading(true);
+		setLoadingStatus('Łączenie z serwerem...');
 		const nodesReq = await fetch(apiUrl(region));
 		const dataUpdatedAt = nodesReq.headers.get('X-Data-Updated');
-		const nodesBlob = await nodesReq.blob();
-		const nodes = unpack(await nodesBlob.arrayBuffer());
+		const totalBytes = Number(nodesReq.headers.get('Content-Length')) || 0;
 
-		void getPresets();
+		setLoadingStatus('Pobieranie danych...');
+		const reader = nodesReq.body.getReader();
+		const chunks = [];
+		let receivedBytes = 0;
+		const startTime = performance.now();
+
+		for (;;) {
+			const { done, value } = await reader.read();
+			if (done) break;
+
+			chunks.push(value);
+			receivedBytes += value.length;
+			renderLoadingProgress(receivedBytes, totalBytes, (performance.now() - startTime) / 1000);
+		}
+
+		const nodesBuffer = new Uint8Array(receivedBytes);
+		let writeOffset = 0;
+		for (const chunk of chunks) {
+			nodesBuffer.set(chunk, writeOffset);
+			writeOffset += chunk.length;
+		}
+
+		setLoadingStatus('Rozpakowywanie danych...');
+		const nodes = unpack(nodesBuffer);
+
+		const presetsPromise = getPresets();
 
 		const byType = {};
 		const freqSet = new Set();
@@ -731,6 +780,7 @@ const downloadNodes = async region => {
 		for (let offset = 0; offset < nodes.length; offset += CHUNK_SIZE) {
 			const end = Math.min(offset + CHUNK_SIZE, nodes.length);
 
+			setLoadingStatus(`Przetwarzanie węzłów... (${end} / ${nodes.length})`);
 			if (offset > 0) await new Promise(r => setTimeout(r, 0));
 
 			for (let i = offset; i < end; i++) {
@@ -760,6 +810,14 @@ const downloadNodes = async region => {
 
 				if (node.params?.freq) freqSet.add(Math.floor(node.params.freq));
 			}
+		}
+
+		setLoadingStatus('Pobieranie presetów radiowych...');
+		try {
+			await presetsPromise;
+		}
+		catch (err) {
+			console.error('Nie udało się pobrać presetów radiowych:', err);
 		}
 
 		nodesCache[region] = { nodes, byType, availableFreqs: [...freqSet].sort((a, b) => a - b), dataUpdatedAt };

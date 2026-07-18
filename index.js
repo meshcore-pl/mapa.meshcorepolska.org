@@ -20,6 +20,7 @@ const app = express();
 
 // Configure the app
 if (isProd) app.set('trust proxy', 1);
+app.set('view engine', 'ejs');
 app.locals.domain = DOMAIN;
 app.locals.version = version;
 
@@ -32,7 +33,10 @@ app.use(timeout());
 
 
 // Routes
+const IndexRouter = require('./routes/Index.js');
 const APIRouter = require('./routes/Api.js');
+
+app.use(IndexRouter);
 app.use('/api/v1', APIRouter);
 
 

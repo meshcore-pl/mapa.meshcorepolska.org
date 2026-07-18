@@ -31,4 +31,21 @@ export const getNameIconLabel = name => {
 
 export const formatDateTime = date => date.toLocaleString(navigator.languages || navigator.language);
 
+export const formatTime = date => date.toLocaleTimeString(navigator.languages || navigator.language);
+
 export const truncateKey = (key, visibleChars = 10) => `${key.slice(0, visibleChars)}...${key.slice(-visibleChars)}`;
+
+export const formatBytes = bytes => {
+	if (bytes < 1024) return `${bytes} B`;
+
+	const units = ['KB', 'MB', 'GB'];
+	let value = bytes;
+	let unitIndex = -1;
+
+	do {
+		value /= 1024;
+		unitIndex++;
+	} while (value >= 1024 && unitIndex < units.length - 1);
+
+	return `${value.toFixed(1)} ${units[unitIndex]}`;
+};
