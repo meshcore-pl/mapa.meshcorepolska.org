@@ -47,6 +47,8 @@
 	<link rel="stylesheet" href="/vendor/markercluster/MarkerCluster.css">
 	<link rel="stylesheet" href="/vendor/markercluster/MarkerCluster.Default.css">
 	<link rel="stylesheet" href="/assets/css/style.css">
+	<link rel="stylesheet" href="/assets/css/legend.css">
+	<link rel="stylesheet" href="/assets/css/modal.css">
 
 	<!-- schema.org -->
 	<script type="application/ld+json">
@@ -151,24 +153,26 @@
 	</a>
 </div>
 
-<div class="settings-panel" id="settings-panel" hidden>
-	<div class="legend-title">Ustawienia</div>
-	<p class="settings-placeholder">Wkrótce pojawią się tutaj opcje.</p>
+<div class="modal-overlay" id="settings-overlay" hidden>
+	<div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+		<div class="legend-title" id="settings-title">Ustawienia</div>
+		<p class="settings-placeholder">Wkrótce pojawią się tutaj opcje.</p>
+	</div>
 </div>
 
 <div class="legend-panel" id="legend-panel" hidden>
 	<div class="legend-title">Typ węzła</div>
-	<div class="legend-row"><img class="legend-icon" src="/assets/img/node_types/1.svg" alt="" width="20" height="20"><span>Klient</span></div>
-	<div class="legend-row"><img class="legend-icon" src="/assets/img/node_types/2.svg" alt="" width="20" height="20"><span>Repeater</span></div>
-	<div class="legend-row"><img class="legend-icon" src="/assets/img/node_types/3.svg" alt="" width="20" height="20"><span>Serwer pokoju</span></div>
-	<div class="legend-row"><img class="legend-icon" src="/assets/img/node_types/4.svg" alt="" width="20" height="20"><span>Czujnik</span></div>
+	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/assets/icons/node-types.svg#client-plain"></use></svg><span>Klient</span></div>
+	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/assets/icons/node-types.svg#repeater-plain"></use></svg><span>Repeater</span></div>
+	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/assets/icons/node-types.svg#room-server-plain"></use></svg><span>Serwer pokoju</span></div>
+	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/assets/icons/node-types.svg#sensor-plain"></use></svg><span>Czujnik</span></div>
 
 	<div class="legend-title">Aktualność</div>
-	<div class="legend-row"><img class="legend-icon update-recent" src="/assets/img/node_types/1.svg" alt="" width="20" height="20"><span>Zaktualizowano niedawno</span></div>
-	<div class="legend-row"><img class="legend-icon update-stale" src="/assets/img/node_types/1.svg" alt="" width="20" height="20"><span>Zaktualizowano jakiś czas temu</span></div>
-	<div class="legend-row"><img class="legend-icon update-old" src="/assets/img/node_types/1.svg" alt="" width="20" height="20"><span>Dawno nieaktualizowany</span></div>
-	<div class="legend-row"><img class="legend-icon update-extinct" src="/assets/img/node_types/1.svg" alt="" width="20" height="20"><span>Zostanie wkrótce usunięty</span></div>
-	<div class="legend-row"><img class="legend-icon" src="/assets/img/node_types/1.svg" alt="" width="20" height="20"><span>Dodano ręcznie</span></div>
+	<div class="legend-row"><svg class="legend-icon update-recent" width="20" height="20"><use href="/assets/icons/node-types.svg#client"></use></svg><span>Zaktualizowano niedawno</span></div>
+	<div class="legend-row"><svg class="legend-icon update-stale" width="20" height="20"><use href="/assets/icons/node-types.svg#client"></use></svg><span>Zaktualizowano jakiś czas temu</span></div>
+	<div class="legend-row"><svg class="legend-icon update-old" width="20" height="20"><use href="/assets/icons/node-types.svg#client"></use></svg><span>Dawno nieaktualizowany</span></div>
+	<div class="legend-row"><svg class="legend-icon update-extinct" width="20" height="20"><use href="/assets/icons/node-types.svg#client"></use></svg><span>Zostanie wkrótce usunięty</span></div>
+	<div class="legend-row"><svg class="legend-icon" width="20" height="20"><use href="/assets/icons/node-types.svg#client"></use></svg><span>Dodano ręcznie</span></div>
 </div>
 
 <script src="/vendor/leaflet/leaflet.js"></script>

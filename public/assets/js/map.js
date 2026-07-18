@@ -1,6 +1,8 @@
 /* global L */
 import { unpack } from '../../vendor/msgpackr/msgpackr.js';
 import * as ntools from './node-utils.js';
+import { initSettingsModal } from './modal.js';
+import { initLegendPanel } from './legend.js';
 
 const apiUrl = region => `/api/v1/nodes?region=${region}`;
 
@@ -284,13 +286,15 @@ map.on('baselayerchange', ev => localStorage.setItem('baseMapSelected', ev.name)
 
 L.control.layers(baseMaps, null, { position: 'bottomleft' }).addTo(map);
 
+const nodeTypeIconNames = { 1: 'client', 2: 'repeater', 3: 'room-server', 4: 'sensor' };
+
 const icons = Object.fromEntries(['none', 'recent', 'stale', 'old', 'extinct'].map(color => [color,
-	Object.fromEntries([1, 2, 3, 4].map(id => [id, L.icon({
-		iconUrl: `/assets/img/node_types/${id}.svg`,
+	Object.fromEntries([2, 3, 4].map(id => [id, L.divIcon({
+		html: `<svg width="32" height="32"><use href="/assets/icons/node-types.svg#${nodeTypeIconNames[id]}"></use></svg>`,
+		className: `svg-node-icon update-${color}`,
 		iconSize: [32, 32],
 		iconAnchor: [17, 17],
 		popupAnchor: [0, -16],
-		className: `update-${color}`,
 	})])),
 ]));
 
@@ -298,10 +302,10 @@ const loadingOverlay = document.getElementById('loading-overlay');
 const statsCounts = document.getElementById('stats-counts');
 const regionToggle = document.getElementById('region-toggle');
 const regionToggleLabel = document.getElementById('region-toggle-label');
-const settingsToggle = document.getElementById('settings-toggle');
-const settingsPanel = document.getElementById('settings-panel');
-const legendToggle = document.getElementById('legend-toggle');
-const legendPanel = document.getElementById('legend-panel');
+const settingsModal = initSettingsModal();
+const legendPanelUi = initLegendPanel();
+settingsModal.toggle.addEventListener('click', () => legendPanelUi.close());
+legendPanelUi.toggle.addEventListener('click', () => settingsModal.close());
 const searchInline = document.getElementById('search-form');
 const searchInput = document.getElementById('search-input');
 const searchResultsEl = document.getElementById('search-results');
@@ -476,7 +480,7 @@ const renderStats = () => {
 	statsCounts.innerHTML = `
 		<span>razem: <b>${nodes.length}</b></span>&nbsp;|
 		<svg class="icon pointer-help"><use href="/assets/icons/icons.svg#icon-user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
-		<svg class="icon pointer-help"><use href="/assets/icons/icons.svg#icon-signal"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
+		<svg class="icon icon-filled pointer-help"><use href="/assets/icons/node-types.svg#repeater-plain"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
 		<svg class="icon pointer-help"><use href="/assets/icons/icons.svg#icon-users"></use></svg><b>${(byType[3] || []).length}</b>
 		<span class="pointer-help" title="Węzły dodane w ciągu ostatnich 24 godzin">24h: <b>${c1}</b></span>
 		<span class="pointer-help" title="Węzły dodane w ciągu ostatnich 7 dni">7d: <b>${c7}</b></span>
@@ -502,7 +506,7 @@ function renderSearchResults() {
 	if (!searchResultsEl.hidden) positionDropdown(searchResultsEl);
 	searchResultsEl.innerHTML = results.map((node, index) => `
 		<li data-index="${index}">
-			<img src="/assets/img/node_types/${node.type}.svg" width="32" height="32" alt="">
+			<svg width="32" height="32"><use href="/assets/icons/node-types.svg#${nodeTypeIconNames[node.type]}-plain"></use></svg>
 			<div class="search-text">
 				<h6>${highlightString(node.adv_name, state.search)}</h6>
 				<div class="search-pkey">${highlightString(node.public_key, state.search)}</div>
@@ -727,22 +731,6 @@ clearFiltersBtn.addEventListener('click', clearFilters);
 
 regionToggle.addEventListener('click', () => setRegion(state.region === 'all' ? 'pl' : 'all'));
 
-settingsToggle.addEventListener('click', () => {
-	settingsPanel.hidden = !settingsPanel.hidden;
-	settingsToggle.classList.toggle('active', !settingsPanel.hidden);
-
-	legendPanel.hidden = true;
-	legendToggle.classList.remove('active');
-});
-
-legendToggle.addEventListener('click', () => {
-	legendPanel.hidden = !legendPanel.hidden;
-	legendToggle.classList.toggle('active', !legendPanel.hidden);
-
-	settingsPanel.hidden = true;
-	settingsToggle.classList.remove('active');
-});
-
 document.addEventListener('click', e => {
 	const copyBtn = e.target.closest('.copy-link-btn');
 	if (copyBtn) void navigator.clipboard.writeText(copyBtn.dataset.meshLink);
@@ -754,14 +742,6 @@ document.addEventListener('click', e => {
 	}
 	if (!searchResultsEl.hidden && !searchResultsEl.contains(e.target) && !searchInline.contains(e.target)) {
 		searchResultsEl.hidden = true;
-	}
-	if (!legendPanel.hidden && !legendPanel.contains(e.target) && !legendToggle.contains(e.target)) {
-		legendPanel.hidden = true;
-		legendToggle.classList.remove('active');
-	}
-	if (!settingsPanel.hidden && !settingsPanel.contains(e.target) && !settingsToggle.contains(e.target)) {
-		settingsPanel.hidden = true;
-		settingsToggle.classList.remove('active');
 	}
 });
 
