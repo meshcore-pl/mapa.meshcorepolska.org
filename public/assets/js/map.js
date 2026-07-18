@@ -130,7 +130,7 @@ const withCopyButton = (displayHtml, copyValue, btnTitle, textTitle = '') => `
 	<span class="copy-cell">
 		<span class="copy-cell-text"${textTitle ? ` title="${textTitle}"` : ''}>${displayHtml}</span>
 		<button type="button" class="copy-icon-btn" title="${btnTitle}" data-copy-value="${escapeHtml(copyValue)}">
-			<svg class="icon" aria-hidden="true"><use href="/assets/icons/icons.svg#icon-copy"></use></svg>
+			<svg class="icon" aria-hidden="true"><use href="/assets/icons/icons.svg#copy"></use></svg>
 		</button>
 	</span>`;
 
@@ -566,10 +566,10 @@ const renderStats = () => {
 	const byType = state.nodesByType;
 
 	statsCounts.innerHTML = `
-		<span>razem: <b>${nodes.length}</b></span>&nbsp;|
-		<svg class="icon pointer-help" title="Klienci"><use href="/assets/icons/icons.svg#icon-user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
-		<svg class="icon icon-filled pointer-help" title="Repeatery"><use href="/assets/icons/node-types.svg#repeater-plain"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
-		<svg class="icon pointer-help" title="Serwery pokoju"><use href="/assets/icons/icons.svg#icon-users"></use></svg><b>${(byType[3] || []).length}</b>
+		<span class="pointer-help" title="Łączna liczba wszystkich węzłów">razem: <b>${nodes.length}</b></span>&nbsp;|
+		<svg class="icon pointer-help" title="Łączna liczba klientów"><use href="/assets/icons/icons.svg#user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
+		<svg class="icon icon-filled pointer-help" title="Łączna liczba repeaterów"><use href="/assets/icons/node-types.svg#repeater-plain"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
+		<svg class="icon pointer-help" title="Łączna liczba serwerów pokoju"><use href="/assets/icons/icons.svg#message"></use></svg><b>${(byType[3] || []).length}</b>
 	`;
 
 	statsModal.render();

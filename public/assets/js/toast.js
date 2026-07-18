@@ -5,7 +5,7 @@ export const showToast = (message, { duration = 2200 } = {}) => {
 	el.className = 'toast';
 	el.innerHTML = `
 		<span class="toast-icon">
-			<svg class="icon" aria-hidden="true"><use href="/assets/icons/icons.svg#icon-check"></use></svg>
+			<svg class="icon" aria-hidden="true"><use href="/assets/icons/icons.svg#check"></use></svg>
 		</span>
 		<span>${message}</span>`;
 
