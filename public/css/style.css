@@ -891,8 +891,8 @@ a:active {
 }
 
 .node-qr canvas, .node-qr img {
-	width: 160px;
-	height: 160px;
+	width: 150px !important;
+	height: 150px !important;
 }
 
 table.node-info {

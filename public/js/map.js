@@ -1,5 +1,6 @@
-/* global L, QRCode */
+/* global L */
 import { unpack } from '../vendor/msgpackr/msgpackr.js';
+import { toCanvas as qrToCanvas } from '../vendor/qrcode/qrcode.js';
 import * as ntools from './node-utils.js';
 import { initModal } from './modal.js';
 import { initLegendPanel } from './legend.js';
@@ -347,18 +348,14 @@ map.on('popupopen', e => {
 		if (!qrEl || !qrEl.isConnected) return;
 
 		qrEl.innerHTML = '';
-		try {
-			new QRCode(qrEl, {
-				text: qrEl.dataset.qrValue,
-				width: 256,
-				height: 256,
-				colorDark: '#000',
-				colorLight: '#fff',
-				correctLevel: QRCode.CorrectLevel.M,
-			});
-		} catch (err) {
-			console.error('Nie udało się wygenerować kodu QR:', err);
-		}
+		const canvas = document.createElement('canvas');
+		qrEl.appendChild(canvas);
+		qrToCanvas(canvas, qrEl.dataset.qrValue, {
+			width: 256,
+			margin: 1,
+			color: { dark: '#000', light: '#fff' },
+			errorCorrectionLevel: 'M',
+		}).catch(err => console.error('Nie udało się wygenerować kodu QR:', err));
 	});
 });
 
@@ -857,7 +854,7 @@ const downloadNodes = async region => {
 
 				node.status = updateStatus;
 				node.preset = node.params;
-				node.coords = `${node.lat.toFixed(4)}, ${node.lon.toFixed(4)}`;
+				node.coords = `${node.lat.toFixed(6)}, ${node.lon.toFixed(6)}`;
 				node.lastAdvertDate = new Date(node.last_advert);
 				node.insertDate = new Date(node.inserted_date);
 				node.updatedDate = node.updated_date && new Date(node.updated_date);
