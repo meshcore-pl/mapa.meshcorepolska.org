@@ -52,6 +52,10 @@
 	height: 18px;
 }
 
+.toast-success .toast-icon {
+	color: var(--green-bright);
+}
+
 .toast-info .toast-icon {
 	color: var(--blue-bright);
 }
