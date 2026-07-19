@@ -4,7 +4,7 @@ import * as ntools from './node-utils.js';
 import { initModal } from './modal.js';
 import { initLegendPanel } from './legend.js';
 import { initStatsModal } from './stats.js';
-import { showToast } from './toast.js';
+import { showToast, updateToast } from './toast.js';
 
 const apiUrl = region => `/api/v1/nodes?region=${region}`;
 
@@ -630,7 +630,7 @@ function renderSearchResults() {
 	if (!searchResultsEl.hidden) positionDropdown(searchResultsEl);
 	searchResultsEl.innerHTML = results.map(node => `
 		<li>
-			<svg width="32" height="32"><use href="/icons/node-types.svg#${nodeTypeIconNames[node.type]}-plain"></use></svg>
+			<svg width="22" height="22"><use href="/icons/node-types.svg#${nodeTypeIconNames[node.type]}-plain"></use></svg>
 			<div class="search-text">
 				<h6>${highlightString(node.adv_name, state.search)}</h6>
 				<div class="search-pkey">${highlightString(ntools.truncateKey(node.public_key), state.search)}</div>
@@ -643,7 +643,7 @@ function renderSearchResults() {
 	});
 }
 
-const applyFilters = () => {
+const runFilterPass = () => {
 	const fromDate = new Date(state.fromDate);
 	const fromInsertDate = new Date(state.fromInsertDate);
 	const byType = state.nodesByType;
@@ -669,6 +669,29 @@ const applyFilters = () => {
 	syncUrlParams();
 	updateFiltersActiveUI();
 	renderSearchResults();
+};
+
+let filterToast = null;
+
+const applyFilters = ({ silent = false } = {}) => {
+	if (silent) {
+		runFilterPass();
+		return;
+	}
+
+	filterToast = filterToast?.isConnected
+		? updateToast(filterToast, 'Aktualizowanie danych...', { duration: 0, status: 'loading' })
+		: showToast('Aktualizowanie danych...', { duration: 0, status: 'loading' });
+
+	requestAnimationFrame(() => requestAnimationFrame(() => {
+		try {
+			runFilterPass();
+			updateToast(filterToast, 'Dane zaktualizowane', { duration: 1000, status: 'success' });
+		} catch (err) {
+			console.error('Nie udało się zaktualizować danych:', err);
+			updateToast(filterToast, 'Nie udało się zaktualizować danych', { status: 'error' });
+		}
+	}));
 };
 
 const onFreqFilterChange = () => {
@@ -879,11 +902,12 @@ const downloadNodes = async region => {
 const setRegion = async region => {
 	if (region === state.region) return;
 
+	const cached = Boolean(nodesCache[region]);
 	state.region = region;
 	localStorage.setItem('regionSelected', region);
 	updateRegionToggleUI();
 	await downloadNodes(region);
-	applyFilters();
+	applyFilters({ silent: !cached });
 };
 
 searchInline.addEventListener('submit', e => e.preventDefault());
@@ -963,12 +987,14 @@ const getRegionDataSize = async region => {
 regionToggle.addEventListener('click', async () => {
 	const targetRegion = state.region === 'all' ? 'pl' : 'all';
 
-	if (targetRegion === 'all' && !nodesCache.all) {
+	if (targetRegion === 'all' && !nodesCache.all && !localStorage.getItem('regionWarningAcknowledged')) {
 		const size = await getRegionDataSize('all');
 		regionWarningSizeEl.textContent = size ? `około ${ntools.formatBytes(size)}` : 'nieznany rozmiar';
 
 		const confirmed = await confirmRegionWarning();
 		if (!confirmed) return;
+
+		localStorage.setItem('regionWarningAcknowledged', '1');
 	}
 
 	void setRegion(targetRegion);
@@ -1036,7 +1062,7 @@ downloadNodes(state.region).then(() => {
 		state.freqFilter = urlParams.freq.split(',').map(Number);
 		renderFreqFilters();
 	}
-	applyFilters();
+	applyFilters({ silent: true });
 });
 
 window.refreshMap = refreshMap;

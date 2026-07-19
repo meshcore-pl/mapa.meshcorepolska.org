@@ -571,6 +571,8 @@ a:active {
 	list-style: none;
 	margin: 0;
 	padding: 14px;
+	max-height: 70vh;
+	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
 	gap: 14px;

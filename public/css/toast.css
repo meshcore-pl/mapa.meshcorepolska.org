@@ -53,6 +53,19 @@
 	height: 13px;
 }
 
+.toast-icon-loading {
+	background: none;
+}
+
+.toast-spinner {
+	width: 18px;
+	height: 18px;
+	border: 2px solid var(--border-strong);
+	border-top-color: var(--red-bright);
+	border-radius: 50%;
+	animation: spin 0.75s linear infinite;
+}
+
 @media (max-width: 800px) {
 	.toast-container {
 		bottom: 14px;
