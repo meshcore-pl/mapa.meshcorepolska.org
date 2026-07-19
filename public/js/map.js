@@ -336,6 +336,10 @@ const baseMaps = {
 		maxZoom: 20,
 		subdomains: 'abcd',
 	}),
+	'CartoDB Positron': L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+		maxZoom: 20,
+		subdomains: 'abcd',
+	}),
 	'OpenStreetMap': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 	}),
@@ -346,17 +350,39 @@ const baseMaps = {
 		maxZoom: 17,
 		subdomains: 'abc',
 	}),
+	'CyclOSM': L.tileLayer('https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png', {
+		maxZoom: 20,
+		subdomains: 'abc',
+	}),
+	'Humanitarian OSM': L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+		maxZoom: 20,
+		subdomains: 'abc',
+	}),
 };
 
 const baseMapAttributions = {
 	'CartoDB Dark': 'Kafelki: &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	'CartoDB Positron': 'Kafelki: &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	'OpenStreetMap': 'Kafelki: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	'Esri Satellite': 'Kafelki: &copy; Esri',
 	'OpenTopoMap': 'Kafelki: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
+	'CyclOSM': 'Kafelki: &copy; <a href="https://www.cyclosm.org">CyclOSM</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	'Humanitarian OSM': 'Kafelki: &copy; <a href="https://www.hotosm.org">HOT</a> &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 	[OPENFREEMAP_NAME]: 'Kafelki: &copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> Dane: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 };
 
-const baseMapOrder = ['CartoDB Dark', 'OpenStreetMap', 'Esri Satellite', 'OpenTopoMap'];
+const baseMapInfo = {
+	'CartoDB Dark': 'Ciemna mapa uliczna (CARTO). Darmowa, bez limitu zapytań, unikaj jednak bardzo dużego ruchu.',
+	'CartoDB Positron': 'Jasna, minimalistyczna mapa uliczna (CARTO). Darmowa, bez limitu zapytań.',
+	'OpenStreetMap': 'Standardowa mapa OpenStreetMap. Oficjalny serwer OSM, tylko normalne przeglądanie, zakaz cachowania/pobierania offline, ograniczona przepustowość.',
+	'Esri Satellite': 'Zdjęcia satelitarne (Esri World Imagery). Darmowe do użytku niekomercyjnego.',
+	'OpenTopoMap': 'Mapa topograficzna. Serwer społecznościowy o niskiej przepustowości, unikaj dużego ruchu.',
+	'CyclOSM': 'Mapa rowerowa oparta na OpenStreetMap. Serwer społecznościowy openstreetmap.fr, umiarkowany, rozsądny ruch.',
+	'Humanitarian OSM': 'Styl humanitarny OpenStreetMap (HOT). Serwer społecznościowy openstreetmap.fr, umiarkowany, rozsądny ruch.',
+	[OPENFREEMAP_NAME]: 'Wektorowa mapa uliczna (MapLibre). Darmowa, bez limitu zapytań, ale wymaga WebGL i większej mocy obliczeniowej urządzenia.',
+};
+
+const baseMapOrder = ['CartoDB Dark', 'CartoDB Positron', 'OpenStreetMap', 'Esri Satellite', 'OpenTopoMap', 'CyclOSM', 'Humanitarian OSM'];
 
 let showOpenFreeMap = localStorage.getItem('showOpenFreeMap') === '1';
 const getBaseMapOrder = () => showOpenFreeMap ? [...baseMapOrder, OPENFREEMAP_NAME] : baseMapOrder;
@@ -1214,7 +1240,7 @@ const renderBaseMapToggle = () => {
 };
 
 const renderBasemapMenu = () => {
-	basemapMenu.innerHTML = getBaseMapOrder().map(name => `<li data-basemap="${name}">${name}</li>`).join('');
+	basemapMenu.innerHTML = getBaseMapOrder().map(name => `<li data-basemap="${name}" title="${baseMapInfo[name]}">${name}</li>`).join('');
 };
 
 renderBasemapMenu();
