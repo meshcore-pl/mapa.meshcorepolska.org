@@ -1,44 +1,17 @@
 .legend-panel {
-	position: fixed;
-	z-index: 999;
-	right: 76px;
-	bottom: 14px;
-	width: 260px;
-	max-height: calc(100vh - 28px);
-	overflow-y: auto;
+	gap: 12px;
+}
+
+.legend-columns {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 24px;
+}
+
+.legend-col {
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
-	padding: 14px;
-	background: var(--bg-panel);
-	-webkit-backdrop-filter: blur(6px);
-	backdrop-filter: blur(6px);
-	border: 1px solid var(--border);
-	border-radius: var(--radius);
-	box-shadow: var(--shadow);
-	transition: opacity 0.18s var(--ease), transform 0.18s var(--ease), display 0.18s allow-discrete;
-	transform-origin: bottom right;
-}
-
-.legend-panel[hidden] {
-	display: none;
-	opacity: 0;
-	transform: translateX(8px) scale(0.96);
-}
-
-@starting-style {
-	.legend-panel:not([hidden]) {
-		opacity: 0;
-		transform: translateX(8px) scale(0.96);
-	}
-}
-
-.legend-panel .modal-title {
-	font-size: 0.9rem;
-}
-
-.legend-panel .modal-title:not(:first-child) {
-	margin-top: 6px;
 }
 
 .legend-row {
@@ -59,17 +32,57 @@
 
 .legend-footer {
 	display: flex;
-	flex-direction: column;
-	gap: 2px;
-	margin-top: 6px;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: space-between;
+	gap: 10px;
 	padding-top: 8px;
 	border-top: 1px solid var(--border);
 	font-size: 0.75rem;
 	color: var(--text-muted);
 }
 
-@media (max-width: 800px) {
-	.legend-panel {
-		max-width: calc(100vw - 28px);
+.legend-footer-meta {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.legend-footer .btn {
+	flex-shrink: 0;
+	font-size: 0.82rem;
+	padding: 7px 14px;
+}
+
+.changelog-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.changelog-version-title {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: var(--text);
+	margin-bottom: 6px;
+}
+
+.changelog-changes {
+	margin: 0;
+	padding-left: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	font-size: 0.975rem;
+	color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+	.legend-columns {
+		grid-template-columns: 1fr;
+		row-gap: 12px;
 	}
 }

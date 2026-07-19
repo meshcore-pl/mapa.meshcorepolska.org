@@ -5,6 +5,7 @@ import * as ntools from './node-utils.js';
 import { initModal } from './modal.js';
 import { initLegendPanel } from './legend.js';
 import { initStatsModal } from './stats.js';
+import { initChangelogModal } from './changelog.js';
 import { showToast, updateToast } from './toast.js';
 
 const apiUrl = region => `/api/v1/nodes?region=${region}`;
@@ -594,8 +595,10 @@ const statsModal = initStatsModal({
 	onFocusNode: node => showNode(node),
 });
 
-for (const a of [settingsModal, legendPanelUi, statsModal]) {
-	for (const b of [settingsModal, legendPanelUi, statsModal]) {
+const changelogModal = initChangelogModal({ escapeHtml });
+
+for (const a of [settingsModal, legendPanelUi, statsModal, changelogModal]) {
+	for (const b of [settingsModal, legendPanelUi, statsModal, changelogModal]) {
 		if (a !== b) a.toggle.addEventListener('click', () => b.close());
 	}
 }

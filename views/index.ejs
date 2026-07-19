@@ -224,23 +224,40 @@
 	</div>
 </div>
 
-<div class="legend-panel" id="legend-panel" hidden>
-	<div class="modal-title">Typ węzła</div>
-	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#client-plain"></use></svg><span>Klient</span></div>
-	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#repeater-plain"></use></svg><span>Repeater</span></div>
-	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#room-server-plain"></use></svg><span>Serwer pokoju</span></div>
-	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#sensor-plain"></use></svg><span>Czujnik</span></div>
+<div class="modal-overlay" id="legend-overlay" hidden>
+	<div class="settings-panel legend-panel" id="legend-panel" role="dialog" aria-modal="true" aria-labelledby="legend-title">
+		<div class="legend-columns">
+			<div class="legend-col">
+				<div class="modal-title" id="legend-title">Typ węzła</div>
+				<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#client-plain"></use></svg><span>Klient</span></div>
+				<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#repeater-plain"></use></svg><span>Repeater</span></div>
+				<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#room-server-plain"></use></svg><span>Serwer pokoju</span></div>
+				<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#sensor-plain"></use></svg><span>Czujnik</span></div>
+			</div>
 
-	<div class="modal-title">Mapa</div>
-	<div class="legend-row"><svg class="legend-icon update-recent" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zaktualizowano niedawno</span></div>
-	<div class="legend-row"><svg class="legend-icon update-stale" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zaktualizowano jakiś czas temu</span></div>
-	<div class="legend-row"><svg class="legend-icon update-old" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Dawno nieaktualizowany</span></div>
-	<div class="legend-row"><svg class="legend-icon update-extinct" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zostanie wkrótce usunięty</span></div>
-	<div class="legend-row"><svg class="legend-icon" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Dodano ręcznie</span></div>
+			<div class="legend-col">
+				<div class="modal-title">Mapa</div>
+				<div class="legend-row"><svg class="legend-icon update-recent" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zaktualizowano niedawno</span></div>
+				<div class="legend-row"><svg class="legend-icon update-stale" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zaktualizowano jakiś czas temu</span></div>
+				<div class="legend-row"><svg class="legend-icon update-old" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Dawno nieaktualizowany</span></div>
+				<div class="legend-row"><svg class="legend-icon update-extinct" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zostanie wkrótce usunięty</span></div>
+				<div class="legend-row"><svg class="legend-icon" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Dodano ręcznie</span></div>
+			</div>
+		</div>
 
-	<div class="legend-footer">
-		<div>Aktualizacja danych: <span id="legend-updated-at">-</span></div>
-		<div>Wersja witryny: <%= version %></div>
+		<div class="legend-footer">
+			<div class="legend-footer-meta">
+				<div>Wersja witryny: <%= version %></div>
+				<div>Aktualizacja danych: <span id="legend-updated-at">-</span></div>
+			</div>
+			<button type="button" class="btn btn-outline" id="changelog-toggle">Lista zmian</button>
+		</div>
+	</div>
+</div>
+
+<div class="modal-overlay" id="changelog-overlay" hidden>
+	<div class="settings-panel" id="changelog-panel" role="dialog" aria-modal="true" aria-label="Lista zmian">
+		<ul class="changelog-list" id="changelog-list"></ul>
 	</div>
 </div>
 
