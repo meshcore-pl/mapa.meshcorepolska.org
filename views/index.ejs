@@ -226,6 +226,17 @@
 
 <div class="modal-overlay" id="legend-overlay" hidden>
 	<div class="settings-panel legend-panel" id="legend-panel" role="dialog" aria-modal="true" aria-labelledby="legend-title">
+		<section class="legend-plans" aria-labelledby="legend-plans-title">
+			<div class="modal-title" id="legend-plans-title">Plany</div>
+			<p>Planowany jest serwis <a href="https://meshcoreprofiles.com" target="_blank" rel="noopener">meshcoreprofiles.com</a>, zintegrowany z mapą węzłów z całego świata.</p>
+			<ul>
+				<li>Użytkownicy, którzy wprowadzą dane o companionie lub RPT, otrzymają własny profil.</li>
+				<li>Wybrane informacje z profili będą widoczne bezpośrednio na mapie, dzięki czemu będzie można łatwo sprawdzić, do kogo należy dany węzeł.</li>
+				<li>Właściciele repeaterów będą mogli przesyłać ich zdjęcia, które następnie zostaną publicznie wyświetlone w serwisie.</li>
+			</ul>
+			<p>Testowa wersja konfiguratora jest obecnie dostępna wyłącznie dla użytkowników serwera <a href="https://meshcorepolska.org/discord" target="_blank" rel="noopener">Discord MeshCore Polska</a> (komenda <code>/konfigurator</code> od <code>Sefi#6347</code>). <a href="https://beta.sefinek.net/meshcore-pl/kontakty/6a43efd454feb8be5679e0a6" target="_blank" rel="noopener">Zobacz przykładowy</a>.</p>
+		</section>
+
 		<div class="legend-columns">
 			<div class="legend-col">
 				<div class="modal-title" id="legend-title">Typ węzła</div>
@@ -247,7 +258,7 @@
 
 		<div class="legend-footer">
 			<div class="legend-footer-meta">
-				<div>Wersja witryny: <%= version %></div>
+				<div>Wersja witryny: v<%= version %></div>
 				<div>Aktualizacja danych: <span id="legend-updated-at">-</span></div>
 			</div>
 			<button type="button" class="btn btn-outline" id="changelog-toggle">Lista zmian</button>

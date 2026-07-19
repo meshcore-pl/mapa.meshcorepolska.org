@@ -1,5 +1,44 @@
-.legend-panel {
+.settings-panel.legend-panel {
+	max-width: 610px;
 	gap: 12px;
+}
+
+.settings-panel#changelog-panel {
+	max-width: 610px;
+}
+
+@media (max-width: 800px) {
+	.settings-panel.legend-panel,
+	.settings-panel#changelog-panel {
+		max-width: calc(100vw - 28px);
+	}
+}
+
+.legend-plans {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid var(--border);
+	font-size: 14px;
+	line-height: 1.45;
+	color: var(--text-muted);
+}
+
+.legend-plans p,
+.legend-plans ul {
+	margin: 0;
+}
+
+.legend-plans ul {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	padding-left: 20px;
+}
+
+.legend-plans code {
+	color: var(--text);
 }
 
 .legend-columns {
@@ -62,10 +101,22 @@
 }
 
 .changelog-version-title {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
 	font-size: 17px;
 	font-weight: 700;
 	color: var(--text);
 	margin-bottom: 6px;
+}
+
+.changelog-version-date {
+	font-size: 13px;
+	font-weight: 400;
+	color: var(--text-muted);
+	cursor: default;
+	text-decoration: none;
 }
 
 .changelog-changes {
