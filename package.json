@@ -35,7 +35,7 @@
     "globals": "^17.7.0"
   },
   "engines": {
-    "node": ">=20.12.0"
+    "node": ">=20.19.0"
   },
   "allowScripts": {
     "msgpackr-extract@3.0.4": true

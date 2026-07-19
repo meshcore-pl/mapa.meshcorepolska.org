@@ -1,20 +1,19 @@
 # Polska mapa MeshCore 🗺️
 Interaktywna mapa węzłów sieci MeshCore w Polsce i na świecie.
-Projekt składa się z frontendu oraz backendu (w Node.js), który pobiera dane z publicznego API MeshCore i przechowuje je w pamięci podręcznej Redis.
+Projekt składa się z frontendu oraz backendu napisanego w Node.js. Backend pobiera dane o węzłach z publicznego API map.meshcore.dev i przechowuje je w pamięci procesu oraz Redis.
 
 ## Czym się wyróżnia?
-- Przetłumaczono wszystko na język polski
-- Możliwość przełączenia się pomiędzy węzłami z Polski i całego świata
-- Opcja udostępnienia węzła lub kontaktu
-- Możliwość skopiowania informacji o węźle lub o kontakcie
-- Domyślnie od razu na start na stronę pojawi się Polska
-- Podbito zależności do najnowszych wersji
-- Zoptymalizowano transfer, dzięki czemu strona będzie się szybciej wczytywać
-- Ulepszono wyszukiwarkę repeaterów oraz kontaktów (skróty klawiszowe)
-- Nowoczesny wygląd oraz kod HTML5 + CSS3 (Vanilla)
+- Polskojęzyczny interfejs.
+- Możliwość przełączania między węzłami z Polski i całego świata.
+- Udostępnianie wybranego węzła lub kontaktu za pomocą bezpośredniego linku.
+- Kopiowanie danych węzłów i kontaktów do schowka.
+- Polska jako domyślnie wybrany region przy pierwszym uruchomieniu.
+- Dane przesyłane w kompaktowym formacie MessagePack; przy domyślnym widoku pobierane są tylko węzły z Polski.
+- Wyszukiwanie węzłów po nazwie i kluczu publicznym, z obsługą klawiatury.
+- Frontend zbudowany w HTML, CSS i JavaScript bez frameworka aplikacyjnego, nowoczesny kod.
 
 ## Plany
-Wkrótce powstanie serwis [meshcoreprofiles.com](https://meshcoreprofiles.com), zintegrowany z mapą węzłów z całego świata.
+Planowany jest serwis `meshcoreprofiles.com`, zintegrowany z mapą węzłów z całego świata.
 
 - Użytkownicy, którzy podadzą swoje dane, otrzymają własny profil.
 - Wybrane informacje z profili będą widoczne bezpośrednio na mapie, dzięki czemu będzie można łatwo sprawdzić, do kogo należy dany węzeł.
@@ -23,7 +22,7 @@ Wkrótce powstanie serwis [meshcoreprofiles.com](https://meshcoreprofiles.com), 
 Testowa wersja konfiguratora jest obecnie dostępna wyłącznie dla użytkowników serwera [Discord MeshCore Polska](https://meshcorepolska.org/discord) (komenda `/konfigurator` od `Sefi#6347`). [Zobacz przykładowy profil](https://beta.sefinek.net/meshcore-pl/kontakty/6a43efd454feb8be5679e0a6).
 
 ## Wymagania
-- Node.js >=20.12.0
+- Node.js >=20.19.0
 - Redis
 - Dostęp do internetu w celu pobierania danych źródłowych
 
@@ -56,13 +55,6 @@ Domyślnie zwracane są węzły znajdujące się w Polsce. Parametr `region=all`
 ```text
 GET /api/v1/nodes?region=all
 ```
-
-## Użyte biblioteki
-- [Leaflet](https://github.com/Leaflet/Leaflet)
-- [Leaflet.markercluster](https://github.com/Leaflet/Leaflet.markercluster)
-- [msgpackr](https://github.com/kriszyp/msgpackr)
-- [Express](https://github.com/expressjs/express)
-- [Redis](https://github.com/redis/node-redis)
 
 ## Uznania
 Projekt powstał na bazie [map.meshcore.dev](https://github.com/recrof/map.meshcore.dev) autorstwa [recrof](https://github.com/recrof) (Rastislav Vysoký).
