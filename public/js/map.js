@@ -330,6 +330,11 @@ const getPresets = async signal => {
 };
 
 const baseMaps = {
+	'CartoDB Dark': L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+		maxZoom: 20,
+		subdomains: 'abcd',
+		attribution: 'Kafelki: &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	}),
 	'OpenStreetMap': L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		maxZoom: 19,
 		attribution: 'Kafelki: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -338,10 +343,17 @@ const baseMaps = {
 		maxZoom: 18,
 		attribution: 'Kafelki: &copy; Esri',
 	}),
+	'OpenTopoMap': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+		maxZoom: 17,
+		subdomains: 'abc',
+		attribution: 'Kafelki: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
+	}),
 };
 
+const baseMapOrder = ['CartoDB Dark', 'OpenStreetMap', 'Esri Satellite', 'OpenTopoMap'];
+
 const storedBaseMap = localStorage.getItem('baseMapSelected');
-const baseMapSelected = Object.hasOwn(baseMaps, storedBaseMap) ? storedBaseMap : 'OpenStreetMap';
+const baseMapSelected = Object.hasOwn(baseMaps, storedBaseMap) ? storedBaseMap : 'CartoDB Dark';
 
 const urlParams = Object.fromEntries(new URLSearchParams(location.search));
 let initialView = { lat: 52.2893, lon: 19.1162, zoom: 7 };
@@ -416,7 +428,7 @@ const statsCounts = document.getElementById('stats-counts');
 const regionToggle = document.getElementById('region-toggle');
 const regionToggleLabel = document.getElementById('region-toggle-label');
 const basemapToggle = document.getElementById('basemap-toggle');
-const basemapToggleLabel = document.getElementById('basemap-toggle-label');
+const basemapMenu = document.getElementById('basemap-menu');
 const settingsModal = initModal('settings-toggle', 'settings-overlay');
 const legendPanelUi = initLegendPanel();
 const searchInline = document.getElementById('search-form');
@@ -526,11 +538,11 @@ const renderDownloadMeta = (receivedBytes, totalBytes, elapsedSec) => {
 	loadingMeta.textContent = `${sizeText} · ${ntools.formatBytes(speed)}/s`;
 };
 
-const positionDropdown = el => {
-	const rect = searchInline.getBoundingClientRect();
+const positionDropdown = (el, anchor = searchInline, { fullWidthOnMobile = true } = {}) => {
+	const rect = anchor.getBoundingClientRect();
 	el.style.top = `${rect.bottom + 10}px`;
 
-	if (window.innerWidth <= 800) {
+	if (fullWidthOnMobile && window.innerWidth <= 800) {
 		el.style.left = '14px';
 		el.style.right = '14px';
 		el.style.width = 'auto';
@@ -1079,18 +1091,31 @@ regionToggle.addEventListener('click', async () => {
 let currentBaseMap = baseMapSelected;
 
 const renderBaseMapToggle = () => {
-	const satellite = currentBaseMap === 'Esri Satellite';
-	basemapToggle.classList.toggle('active', satellite);
-	basemapToggle.title = satellite ? 'Przełącz na mapę' : 'Przełącz na widok satelitarny';
-	basemapToggleLabel.textContent = satellite ? 'Satelita' : 'Mapa';
+	basemapToggle.classList.toggle('active', currentBaseMap !== baseMapOrder[0]);
+	[...basemapMenu.children].forEach(li => li.classList.toggle('active', li.dataset.basemap === currentBaseMap));
 };
 
+const renderBasemapMenu = () => {
+	basemapMenu.innerHTML = baseMapOrder.map(name => `<li data-basemap="${name}">${name}</li>`).join('');
+};
+
+renderBasemapMenu();
 renderBaseMapToggle();
 
-basemapToggle.addEventListener('click', () => {
-	currentBaseMap = currentBaseMap === 'Esri Satellite' ? 'OpenStreetMap' : 'Esri Satellite';
+basemapMenu.addEventListener('click', e => {
+	const li = e.target.closest('li');
+	if (!li) return;
+
+	currentBaseMap = li.dataset.basemap;
 	setBaseMap(currentBaseMap);
 	renderBaseMapToggle();
+	basemapMenu.hidden = true;
+});
+
+basemapToggle.addEventListener('click', () => {
+	const willShow = basemapMenu.hidden;
+	basemapMenu.hidden = !basemapMenu.hidden;
+	if (willShow) positionDropdown(basemapMenu, basemapToggle, { fullWidthOnMobile: false });
 });
 
 document.addEventListener('click', e => {
@@ -1101,11 +1126,13 @@ document.addEventListener('click', e => {
 document.addEventListener('click', e => {
 	if (!filterMenu.hidden && !filterMenu.contains(e.target) && !filterToggle.contains(e.target)) filterMenu.hidden = true;
 	if (!searchResultsEl.hidden && !searchResultsEl.contains(e.target) && !searchInline.contains(e.target)) searchResultsEl.hidden = true;
+	if (!basemapMenu.hidden && !basemapMenu.contains(e.target) && !basemapToggle.contains(e.target)) basemapMenu.hidden = true;
 });
 
 window.addEventListener('resize', () => {
 	if (!filterMenu.hidden) positionDropdown(filterMenu);
 	if (!searchResultsEl.hidden) positionDropdown(searchResultsEl);
+	if (!basemapMenu.hidden) positionDropdown(basemapMenu, basemapToggle, { fullWidthOnMobile: false });
 });
 
 map.on('moveend', syncUrlParams);

@@ -810,8 +810,87 @@ a:active {
 	font-weight: 700;
 }
 
+.basemap-menu {
+	position: fixed;
+	z-index: 1001;
+	width: 180px;
+	max-width: calc(100vw - 40px);
+	list-style: none;
+	margin: 0;
+	padding: 4px;
+	background: var(--bg-panel);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	box-shadow: var(--shadow);
+	transition: opacity 0.18s var(--ease), transform 0.18s var(--ease), display 0.18s allow-discrete;
+	transform-origin: top right;
+}
+
+.basemap-menu[hidden] {
+	display: none;
+	opacity: 0;
+	transform: translateY(-8px) scale(0.97);
+}
+
+@starting-style {
+	.basemap-menu:not([hidden]) {
+		opacity: 0;
+		transform: translateY(-8px) scale(0.97);
+	}
+}
+
+.basemap-menu li {
+	padding: 9px 10px;
+	border-radius: var(--radius-sm);
+	font-size: 0.88rem;
+	color: var(--text);
+	cursor: pointer;
+}
+
+.basemap-menu li:hover {
+	background: var(--bg-panel-hover);
+}
+
+.basemap-menu li.active {
+	background: var(--red-glow);
+	color: #fff;
+}
+
 .leaflet-bottom {
 	position: fixed !important;
+}
+
+.leaflet-bottom.leaflet-left .leaflet-control-attribution {
+	margin: 0 !important;
+}
+
+.leaflet-control-attribution {
+	color: var(--text-muted) !important;
+	background: var(--bg-panel) !important;
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	font-family: var(--font-body);
+	font-size: 0.7rem;
+	line-height: 1.5;
+	padding: 3px 10px !important;
+	border-radius: 0 var(--radius-sm) 0 0;
+	box-shadow: var(--shadow);
+}
+
+.leaflet-control-attribution a {
+	color: var(--red-bright);
+	text-decoration: none;
+}
+
+.leaflet-control-attribution a:hover, .leaflet-control-attribution a:focus {
+	color: var(--red-light);
+	text-decoration: underline;
+}
+
+.leaflet-attribution-flag {
+	display: none !important;
 }
 
 .marker-cluster-small {
