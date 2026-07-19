@@ -931,7 +931,7 @@ const downloadNodes = async region => {
 		applyDownloadedNodes(nodesCache[region]);
 	} catch (err) {
 		if (err.name !== 'AbortError') {
-			const message = err.isApiError ? err.message : 'Wystąpił nieoczekiwany błąd podczas wczytywania danych. Spróbuj ponownie.';
+			const message = err.isApiError ? err.message : 'Wystąpił nieoczekiwany błąd podczas wczytywania danych. Spróbuj odświeżyć stronę.';
 			showToast(message, { status: 'error', duration: 6000 });
 			console.error(err);
 		}
