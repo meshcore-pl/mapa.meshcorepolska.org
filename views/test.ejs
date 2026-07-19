@@ -1,0 +1,346 @@
+<!DOCTYPE html> <!-- Copyright 2026 © by Sefinek. All Rights Reserved. -->
+<html lang="pl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Panel testowy – MeshCore Polska</title>
+
+	<!-- Primary meta -->
+	<meta name="description" content="Podgląd ikon SVG oraz test komponentu toastów używanych w mapie MeshCore Polska.">
+	<meta name="keywords" content="meshcore, mapa meshcore, meshcore polska, ikony svg, toasty">
+	<link rel="canonical" href="https://mapa.meshcorepolska.org/test">
+	<meta name="theme-color" content="#95010b">
+	<meta name="robots" content="nofollow">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Mapa MeshCore Polska">
+	<meta property="og:locale" content="pl_PL">
+	<meta property="og:title" content="Panel testowy – MeshCore Polska">
+	<meta property="og:description" content="Podgląd ikon SVG oraz test komponentu toastów używanych w mapie MeshCore Polska.">
+	<meta property="og:url" content="https://mapa.meshcorepolska.org/test">
+	<meta property="og:image" content="https://meshcorepolska.org/images/brand/banner-og.jpg">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="675">
+	<meta property="og:image:alt" content="MeshCore Polska: ogólnopolska społeczność sieci mesh">
+
+	<!-- Twitter / X Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Panel testowy – MeshCore Polska">
+	<meta name="twitter:description" content="Podgląd ikon SVG oraz test komponentu toastów używanych w mapie MeshCore Polska.">
+	<meta name="twitter:image" content="https://meshcorepolska.org/images/brand/banner-og.jpg">
+	<meta name="twitter:image:alt" content="MeshCore Polska: ogólnopolska społeczność sieci mesh">
+
+	<!-- JavaScript -->
+	<script src="https://cdn.sefinek.net/js/progressbar.js" defer></script>
+
+	<!-- Icons & manifest -->
+	<link rel="icon" href="https://meshcorepolska.org/favicon.ico" sizes="16x16 32x32 48x48 64x64 128x128 256x256">
+	<link rel="icon" href="https://meshcorepolska.org/images/brand/logo-3-192.png" type="image/png" sizes="192x192">
+	<link rel="apple-touch-icon" href="https://meshcorepolska.org/images/brand/logo-3-180.png" sizes="180x180">
+	<link rel="manifest" href="/manifest.json">
+
+	<!-- Stylesheets -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,800&amp;family=IBM+Plex+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="stylesheet" href="/css/toast.css">
+
+	<style>
+		body {
+			padding: 32px;
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+		}
+
+		h1 {
+			font-size: 1.4rem;
+			margin: 0 0 4px;
+		}
+
+		h2 {
+			font-family: var(--font-mono);
+			font-size: 0.9rem;
+			font-weight: 600;
+			letter-spacing: 0.04em;
+			text-transform: uppercase;
+			color: var(--text-muted);
+			margin: 36px 0 14px;
+			padding-bottom: 8px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		h3 {
+			font-family: var(--font-mono);
+			font-size: 0.78rem;
+			font-weight: 600;
+			color: var(--text-muted);
+			margin: 24px 0 10px;
+		}
+
+		.subtitle {
+			color: var(--text-muted);
+			font-size: 0.9rem;
+			margin: 0;
+		}
+
+		.subtitle code {
+			font-family: var(--font-mono);
+		}
+
+		.footer {
+			margin-top: 40px;
+			padding-top: 16px;
+			border-top: 1px solid var(--border);
+			color: var(--text-muted);
+			font-size: 0.8rem;
+			text-align: center;
+		}
+
+		.empty {
+			color: var(--text-muted);
+			font-size: 0.85rem;
+		}
+
+		.grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+			gap: 12px;
+		}
+
+		.card {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 10px;
+			padding: 18px 10px;
+			background: var(--bg-panel);
+			border: 1px solid var(--border);
+			border-radius: 10px;
+			text-align: center;
+			transition: background-color 0.15s ease, border-color 0.15s ease;
+		}
+
+		.card:hover {
+			background: var(--bg-panel-hover);
+			border-color: var(--red);
+		}
+
+		.card svg {
+			width: 40px;
+			height: 40px;
+			color: var(--red);
+			fill: currentColor;
+			stroke: currentColor;
+		}
+
+		.card svg.stroke-only {
+			fill: none;
+		}
+
+		.card code {
+			font-family: var(--font-mono);
+			font-size: 0.76rem;
+			color: var(--text);
+			word-break: break-all;
+		}
+
+		.card .bg {
+			background: repeating-conic-gradient(#2a2f3c 0% 25%, #20242e 0% 50%) 50% / 14px 14px;
+			border-radius: 8px;
+			padding: 10px;
+		}
+
+		.buttons {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+		}
+
+		.trigger-btn {
+			padding: 10px 16px;
+			background: var(--bg-panel);
+			border: 1px solid var(--border);
+			border-radius: 8px;
+			color: var(--text);
+			font: inherit;
+			font-size: 0.85rem;
+			cursor: pointer;
+			transition: background-color 0.15s ease, border-color 0.15s ease;
+		}
+
+		.trigger-btn:hover {
+			background: var(--bg-panel-hover);
+			border-color: var(--red);
+		}
+
+		.field-row {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 12px;
+			align-items: center;
+			margin: 20px 0 24px;
+		}
+
+		.field-row input, .field-row select {
+			padding: 8px 10px;
+			background: var(--bg-panel);
+			border: 1px solid var(--border);
+			border-radius: 8px;
+			color: var(--text);
+			font: inherit;
+			font-size: 0.85rem;
+		}
+
+		.field-row input[type="text"] {
+			flex: 1 1 260px;
+		}
+	</style>
+</head>
+<body>
+<h1>Panel testowy</h1>
+<p class="subtitle">Podgląd ikon SVG oraz ręczny test komponentu <code>showToast</code> / <code>updateToast</code>.</p>
+
+<h2>Toasty</h2>
+<h3>Własny toast</h3>
+<div class="field-row">
+	<input type="text" id="custom-message" placeholder="Treść toasta" value="Przykładowa wiadomość">
+	<select id="custom-status">
+		<option value="success">success</option>
+		<option value="error">error</option>
+		<option value="info">info</option>
+		<option value="loading">loading</option>
+	</select>
+	<input type="number" id="custom-duration" placeholder="Czas (ms)" value="2200" min="0" step="100">
+</div>
+<div class="buttons">
+	<button type="button" class="trigger-btn" id="custom-trigger">Pokaż</button>
+</div>
+
+<h3>Gotowe scenariusze</h3>
+<div class="buttons">
+	<button type="button" class="trigger-btn" data-status="success">Sukces</button>
+	<button type="button" class="trigger-btn" data-status="error">Błąd</button>
+	<button type="button" class="trigger-btn" data-status="info">Informacja</button>
+	<button type="button" class="trigger-btn" id="loading-then-success">Ładowanie → sukces</button>
+	<button type="button" class="trigger-btn" id="loading-then-error">Ładowanie → błąd</button>
+	<button type="button" class="trigger-btn" id="stack-demo">Kilka naraz (stos)</button>
+</div>
+
+<h2>Ikony SVG</h2>
+<p class="subtitle">Automatycznie wygenerowana lista wszystkich &lt;symbol&gt; z plików sprite w <code>/icons/</code>.</p>
+<div id="output"></div>
+
+<p class="footer">Wersja witryny: <%= version %></p>
+
+<div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+<script type="module">
+	import { showToast, updateToast } from '/js/toast.js';
+
+	const MESSAGES = {
+		success: 'Operacja zakończona sukcesem',
+		error: 'Coś poszło nie tak',
+		info: 'To jest informacja dla użytkownika',
+	};
+
+	document.querySelectorAll('.trigger-btn[data-status]').forEach(btn => {
+		btn.addEventListener('click', () => {
+			const status = btn.dataset.status;
+			showToast(MESSAGES[status], { status });
+		});
+	});
+
+	document.getElementById('loading-then-success').addEventListener('click', () => {
+		const toast = showToast('Wczytywanie danych...', { duration: 0, status: 'loading' });
+		setTimeout(() => updateToast(toast, 'Dane wczytane', { status: 'success' }), 1800);
+	});
+
+	document.getElementById('loading-then-error').addEventListener('click', () => {
+		const toast = showToast('Wczytywanie danych...', { duration: 0, status: 'loading' });
+		setTimeout(() => updateToast(toast, 'Nie udało się wczytać danych', { status: 'error' }), 1800);
+	});
+
+	document.getElementById('stack-demo').addEventListener('click', () => {
+		showToast('Pierwszy toast', { status: 'info' });
+		setTimeout(() => showToast('Drugi toast', { status: 'success' }), 300);
+		setTimeout(() => showToast('Trzeci toast', { status: 'error' }), 600);
+	});
+
+	document.getElementById('custom-trigger').addEventListener('click', () => {
+		const message = document.getElementById('custom-message').value || 'Przykładowa wiadomość';
+		const status = document.getElementById('custom-status').value;
+		const duration = Number(document.getElementById('custom-duration').value) || 0;
+		showToast(message, { status, duration });
+	});
+</script>
+
+<script>
+	const spriteFiles = [
+		{ path: '/icons/icons.svg', label: 'icons.svg (interfejs, linie)', strokeOnly: true },
+		{ path: '/icons/node-types.svg', label: 'node-types.svg (typy węzłów)', strokeOnly: false },
+		{ path: '/icons/toast-icons.svg', label: 'toast-icons.svg (toasty)', strokeOnly: true },
+	];
+
+	const output = document.getElementById('output');
+
+	const spriteContainer = document.createElement('div');
+	spriteContainer.hidden = true;
+	document.body.appendChild(spriteContainer);
+
+	const renderSprite = async ({ path, label, strokeOnly }) => {
+		const section = document.createElement('section');
+		const heading = document.createElement('h3');
+		heading.textContent = `${label} — ${path}`;
+		section.appendChild(heading);
+
+		let symbolIds;
+		try {
+			const res = await fetch(path, { cache: 'no-store' });
+			if (!res.ok) throw new Error(`HTTP ${res.status}`);
+			const text = await res.text();
+
+			const sprite = document.createElement('div');
+			sprite.innerHTML = text;
+			spriteContainer.appendChild(sprite);
+
+			symbolIds = [...sprite.querySelectorAll('symbol[id]')].map(s => s.id);
+		}
+		catch (e) {
+			const err = document.createElement('p');
+			err.className = 'empty';
+			err.textContent = `Nie udało się wczytać ${path}: ${e.message}`;
+			section.appendChild(err);
+			output.appendChild(section);
+			return;
+		}
+
+		if (!symbolIds.length) {
+			const empty = document.createElement('p');
+			empty.className = 'empty';
+			empty.textContent = 'Brak symboli w tym pliku.';
+			section.appendChild(empty);
+			output.appendChild(section);
+			return;
+		}
+
+		const grid = document.createElement('div');
+		grid.className = 'grid';
+
+		for (const id of symbolIds) {
+			const card = document.createElement('div');
+			card.className = 'card';
+			card.innerHTML = `
+				<div class="bg"><svg class="${strokeOnly ? 'stroke-only' : ''}"><use href="#${id}"></use></svg></div>
+				<code>${id}</code>`;
+			grid.appendChild(card);
+		}
+
+		section.appendChild(grid);
+		output.appendChild(section);
+	};
+
+	spriteFiles.forEach(renderSprite);
+</script>
+</body>
+</html>

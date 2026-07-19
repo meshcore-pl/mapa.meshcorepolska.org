@@ -1,12 +1,10 @@
 const getContainer = () => document.getElementById('toast-container');
 
-const ICONS = { success: 'check', error: 'warning' };
-
 const renderToastContent = (el, message, status) => {
 	el.className = `toast toast-${status}`;
 	el.innerHTML = status === 'loading'
 		? `<span class="toast-icon toast-icon-loading"><span class="toast-spinner"></span></span><span>${message}</span>`
-		: `<span class="toast-icon"><svg class="icon" aria-hidden="true"><use href="/icons/icons.svg#${ICONS[status]}"></use></svg></span><span>${message}</span>`;
+		: `<span class="toast-icon"><svg class="icon" aria-hidden="true"><use href="/icons/toast-icons.svg#${status}"></use></svg></span><span>${message}</span>`;
 };
 
 const scheduleDismiss = (el, duration) => {

@@ -567,8 +567,13 @@ const refreshMap = ({ clusteringZoom = 0 } = {}) => {
 
 function showNode(node) {
 	ensurePopup(node.marker);
+
+	const zoom = 19;
+	const targetLatLng = node.marker.getLatLng();
+	const targetPoint = map.project(targetLatLng, zoom).subtract([0, 140]);
+	map.setView(map.unproject(targetPoint, zoom), zoom, { animate: false });
+
 	node.marker.openPopup();
-	map.flyTo(node.marker.getLatLng(), 19);
 	state.search = '';
 	searchInput.value = '';
 	renderSearchResults();
@@ -612,7 +617,6 @@ const updateFiltersActiveUI = () => {
 
 const renderStats = () => {
 	const nodes = state.nodes;
-
 	if (!nodes.length) {
 		statsCounts.innerHTML = '';
 		return;
@@ -624,29 +628,39 @@ const renderStats = () => {
 		<span class="pointer-help" title="Łączna liczba wszystkich węzłów">razem: <b>${nodes.length}</b></span>&nbsp;|
 		<svg class="icon pointer-help"><title>Łączna liczba klientów</title><use href="/icons/icons.svg#user"></use></svg><b>${(byType[1] || []).length}</b>&nbsp;|
 		<svg class="icon icon-filled pointer-help"><title>Łączna liczba repeaterów</title><use href="/icons/node-types.svg#repeater-plain"></use></svg><b>${(byType[2] || []).length}</b>&nbsp;|
-		<svg class="icon pointer-help"><title>Łączna liczba serwerów pokoju</title><use href="/icons/icons.svg#message"></use></svg><b>${(byType[3] || []).length}</b>
-	`;
+		<svg class="icon pointer-help"><title>Łączna liczba serwerów pokoju</title><use href="/icons/icons.svg#message"></use></svg><b>${(byType[3] || []).length}</b>`;
 
 	statsModal.render();
+};
+
+let searchResults = [];
+let searchActiveIndex = 0;
+
+const setSearchActiveIndex = index => {
+	if (!searchResults.length) return;
+	searchActiveIndex = Math.max(0, Math.min(index, searchResults.length - 1));
+	[...searchResultsEl.children].forEach((li, i) => li.classList.toggle('active', i === searchActiveIndex));
+	searchResultsEl.children[searchActiveIndex]?.scrollIntoView({ block: 'nearest' });
 };
 
 function renderSearchResults() {
 	if (!state.search) {
 		searchResultsEl.hidden = true;
 		searchResultsEl.innerHTML = '';
+		searchResults = [];
 		return;
 	}
 
 	const nodes = state.filteredNodes.length > 0 ? state.filteredNodes : state.nodes;
-	const results = nodes.filter(
+	searchResults = nodes.filter(
 		node => node.adv_name.toLowerCase().includes(state.search.toLowerCase()) || node.public_key.startsWith(state.search)
 	).toSorted(
 		(a, b) => a.adv_name.localeCompare(b.adv_name)
 	).slice(0, 20);
 
-	searchResultsEl.hidden = results.length === 0;
+	searchResultsEl.hidden = searchResults.length === 0;
 	if (!searchResultsEl.hidden) positionDropdown(searchResultsEl);
-	searchResultsEl.innerHTML = results.map(node => `
+	searchResultsEl.innerHTML = searchResults.map(node => `
 		<li>
 			<svg width="22" height="22"><use href="/icons/node-types.svg#${nodeTypeIconNames[node.type]}-plain"></use></svg>
 			<div class="search-text">
@@ -657,8 +671,11 @@ function renderSearchResults() {
 	`).join('');
 
 	[...searchResultsEl.children].forEach((li, index) => {
-		li.addEventListener('click', () => showNode(results[index]));
+		li.addEventListener('click', () => showNode(searchResults[index]));
+		li.addEventListener('mouseenter', () => setSearchActiveIndex(index));
 	});
+
+	setSearchActiveIndex(0);
 }
 
 const runFilterPass = () => {
@@ -929,9 +946,42 @@ const setRegion = async region => {
 
 searchInline.addEventListener('submit', e => e.preventDefault());
 
+searchInput.addEventListener('focus', () => {
+	if (localStorage.getItem('shiftSearchHintShown')) return;
+	localStorage.setItem('shiftSearchHintShown', '1');
+	showToast('Wskazówka: wciśnij Shift, aby przejść od razu do wyszukiwania', { duration: 4000, status: 'info' });
+}, { once: true });
+
 searchInput.addEventListener('input', () => {
 	state.search = searchInput.value;
 	renderSearchResults();
+});
+
+searchInput.addEventListener('keydown', e => {
+	if (searchResultsEl.hidden || !searchResults.length) return;
+
+	if (e.key === 'ArrowDown') {
+		e.preventDefault();
+		setSearchActiveIndex(searchActiveIndex + 1);
+	} else if (e.key === 'ArrowUp') {
+		e.preventDefault();
+		setSearchActiveIndex(searchActiveIndex - 1);
+	} else if (e.key === 'Enter') {
+		e.preventDefault();
+		showNode(searchResults[searchActiveIndex]);
+	} else if (e.key === 'Escape') {
+		searchResultsEl.hidden = true;
+	}
+});
+
+document.addEventListener('keydown', e => {
+	if (e.key !== 'Shift') return;
+
+	const active = document.activeElement;
+	const isTyping = active && (['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName) || active.isContentEditable);
+	if (isTyping) return;
+
+	searchInput.focus();
 });
 
 filterToggle.addEventListener('click', () => {

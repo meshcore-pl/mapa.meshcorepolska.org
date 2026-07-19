@@ -4,6 +4,7 @@
 	--bg-panel-hover: #262b38;
 	--border: rgba(148, 166, 204, 0.16);
 	--border-strong: rgba(148, 166, 204, 0.3);
+	--chip-bg: rgba(148, 166, 204, 0.12);
 	--text: #eef1f8;
 	--text-muted: #99a1b5;
 	--red: #e01230;
@@ -15,6 +16,7 @@
 	--blue-bright: #4dabf7;
 	--blue-light: #7cc4f7;
 	--blue-dark: #2f8fd1;
+	--blue-glow: rgba(51, 154, 240, 0.25);
 	--green-bright: #2dd881;
 	--amber-bright: #f2b134;
 	--radius: 12px;
@@ -738,7 +740,7 @@ a:active {
 	cursor: pointer;
 }
 
-.search-results li:hover {
+.search-results li:hover, .search-results li.active {
 	background: var(--bg-panel-hover);
 }
 
@@ -938,13 +940,9 @@ a:active {
 	font-size: 0.72rem;
 	font-weight: 600;
 	border: 1px solid var(--border-strong);
-	background: var(--bg-panel-hover);
+	background: var(--chip-bg);
 	color: var(--text-muted);
 	white-space: nowrap;
-}
-
-.badge-type {
-	color: var(--text);
 }
 
 .badge-dot {
@@ -992,7 +990,7 @@ a:active {
 	align-items: center;
 	padding: 2px 7px;
 	border-radius: 6px;
-	background: var(--bg-panel-hover);
+	background: var(--chip-bg);
 	border: 1px solid var(--border);
 	font-family: var(--font-mono);
 	font-size: 0.72rem;
