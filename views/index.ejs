@@ -101,7 +101,7 @@
 	<span class="spacer"></span>
 	<form class="search-inline" id="search-form">
 		<svg class="icon search-icon" aria-hidden="true"><use href="/icons/icons.svg#search"></use></svg>
-		<input type="text" class="text-input" id="search-input" placeholder="Szukaj węzłów" autocomplete="off">
+		<input type="text" class="text-input" id="search-input" placeholder="Szukaj węzłów..." autocomplete="off">
 		<button type="button" class="icon-btn" id="filter-toggle" title="Przełącz filtry">
 			<svg class="icon" aria-hidden="true"><use href="/icons/icons.svg#filter"></use></svg>
 			<span class="filter-active-dot" id="filter-active-dot" hidden></span>
@@ -175,7 +175,7 @@
 	<div class="settings-panel region-warning-panel" id="region-warning-panel" role="dialog" aria-modal="true" aria-labelledby="region-warning-title">
 		<div class="region-warning-header">
 			<span class="region-warning-icon"><svg class="icon" aria-hidden="true"><use href="/icons/icons.svg#warning"></use></svg></span>
-			<div class="region-warning-title" id="region-warning-title">Jesteś tego pewny?</div>
+			<div class="modal-title" id="region-warning-title">Jesteś tego pewny?</div>
 		</div>
 		<p class="region-warning-text">
 			Dane obejmujące cały świat ważą <span id="region-warning-size">nieznany rozmiar</span>, to znacznie więcej niż same węzły z Polski.
@@ -191,21 +191,30 @@
 
 <div class="modal-overlay" id="settings-overlay" hidden>
 	<div class="settings-panel" id="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-		<div class="legend-title" id="settings-title">Ustawienia</div>
-		<label class="checkbox-label"><input type="checkbox" id="setting-close-filters-on-apply" checked> Zamykaj okno filtrów po zastosowaniu</label>
+		<div class="modal-title" id="settings-title">Ustawienia</div>
+
+		<div class="setting-item">
+			<label class="checkbox-label"><input type="checkbox" id="setting-close-filters-on-apply" checked> Zamykaj okno filtrów po zastosowaniu</label>
+			<p class="setting-desc">Po kliknięciu „Zastosuj filtry” panel filtrów zamknie się automatycznie zamiast pozostać otwarty.</p>
+		</div>
+
+		<div class="modal-title settings-subtitle">Zaawansowane</div>
+
+		<div class="setting-item">
+			<label class="checkbox-label"><input type="checkbox" id="setting-show-openfreemap"> Pokaż OpenFreeMap w przełączniku map</label>
+			<p class="setting-desc">Jest to darmowa mapa wektorowa oparta na danych OpenStreetMap. W odróżnieniu od pozostałych map (zwykłe obrazki, kafelki) wymaga dociągnięcia dodatkowej biblioteki renderującej w przeglądarce (~1&nbsp;MB), dlatego jest domyślnie wyłączona. Włącz ją tylko, jeśli faktycznie chcesz z niej skorzystać.</p>
+		</div>
 	</div>
 </div>
 
 <div class="modal-overlay" id="stats-overlay" hidden>
 	<div class="stats-panel" id="stats-panel" role="dialog" aria-modal="true" aria-labelledby="stats-title">
-		<div class="legend-title" id="stats-title">Nowe węzły</div>
+		<div class="modal-title" id="stats-title">Nowe węzły</div>
 		<div class="stats-chips">
 			<div class="stats-chip"><span class="stats-chip-label">24h</span><span class="stats-chip-value" id="stats-chip-24h">0</span></div>
 			<div class="stats-chip"><span class="stats-chip-label">7d</span><span class="stats-chip-value" id="stats-chip-7d">0</span></div>
 			<div class="stats-chip"><span class="stats-chip-label">30d</span><span class="stats-chip-value" id="stats-chip-30d">0</span></div>
 		</div>
-
-		<div class="legend-title">Nowe repeatery</div>
 		<div class="stats-period-group" role="group" aria-label="Zakres czasu">
 			<button type="button" class="stats-period-btn active" data-period="24h">24h</button>
 			<button type="button" class="stats-period-btn" data-period="7d">7d</button>
@@ -216,13 +225,13 @@
 </div>
 
 <div class="legend-panel" id="legend-panel" hidden>
-	<div class="legend-title">Typ węzła</div>
+	<div class="modal-title">Typ węzła</div>
 	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#client-plain"></use></svg><span>Klient</span></div>
 	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#repeater-plain"></use></svg><span>Repeater</span></div>
 	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#room-server-plain"></use></svg><span>Serwer pokoju</span></div>
 	<div class="legend-row"><svg class="legend-icon legend-icon-plain" width="20" height="20"><use href="/icons/node-types.svg#sensor-plain"></use></svg><span>Czujnik</span></div>
 
-	<div class="legend-title">Aktualność</div>
+	<div class="modal-title">Mapa</div>
 	<div class="legend-row"><svg class="legend-icon update-recent" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zaktualizowano niedawno</span></div>
 	<div class="legend-row"><svg class="legend-icon update-stale" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Zaktualizowano jakiś czas temu</span></div>
 	<div class="legend-row"><svg class="legend-icon update-old" width="20" height="20"><use href="/icons/node-types.svg#client"></use></svg><span>Dawno nieaktualizowany</span></div>
@@ -231,7 +240,7 @@
 
 	<div class="legend-footer">
 		<div>Aktualizacja danych: <span id="legend-updated-at">-</span></div>
-		<div>Wersja: <%= version %></div>
+		<div>Wersja witryny: <%= version %></div>
 	</div>
 </div>
 

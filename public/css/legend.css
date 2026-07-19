@@ -33,6 +33,14 @@
 	}
 }
 
+.legend-panel .modal-title {
+	font-size: 0.9rem;
+}
+
+.legend-panel .modal-title:not(:first-child) {
+	margin-top: 6px;
+}
+
 .legend-row {
 	display: flex;
 	align-items: center;

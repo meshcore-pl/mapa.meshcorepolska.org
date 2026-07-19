@@ -351,12 +351,16 @@ const baseMaps = {
 };
 
 const baseMapOrder = ['CartoDB Dark', 'OpenStreetMap', 'Esri Satellite', 'OpenTopoMap'];
+const OPENFREEMAP_NAME = 'OpenFreeMap';
+
+let showOpenFreeMap = localStorage.getItem('showOpenFreeMap') === '1';
+const getBaseMapOrder = () => showOpenFreeMap ? [...baseMapOrder, OPENFREEMAP_NAME] : baseMapOrder;
 
 const storedBaseMap = localStorage.getItem('baseMapSelected');
-const baseMapSelected = Object.hasOwn(baseMaps, storedBaseMap) ? storedBaseMap : 'CartoDB Dark';
+const baseMapSelected = getBaseMapOrder().includes(storedBaseMap) ? storedBaseMap : baseMapOrder[0];
 
 const urlParams = Object.fromEntries(new URLSearchParams(location.search));
-let initialView = { lat: 52.2893, lon: 19.1162, zoom: 7 };
+let initialView = { lat: 52.1874, lon: 19.2371, zoom: 7 };
 if (Number(urlParams.lat) && Number(urlParams.lon) && Number(urlParams.zoom)) {
 	initialView = urlParams;
 }
@@ -372,8 +376,6 @@ const map = window.leafletMap = L.map('map', {
 
 map.attributionControl.setPrefix('<a href="https://leafletjs.com" title="Biblioteka JS do map interaktywnych">Leaflet</a>');
 map.attributionControl.setPosition('bottomleft');
-
-map.addLayer(baseMaps[baseMapSelected]);
 
 map.on('popupopen', e => {
 	requestAnimationFrame(() => {
@@ -392,16 +394,64 @@ map.on('popupopen', e => {
 	});
 });
 
-const setBaseMap = name => {
-	for (const [key, layer] of Object.entries(baseMaps)) {
-		if (key === name) {
-			if (!map.hasLayer(layer)) map.addLayer(layer);
-		} else if (map.hasLayer(layer)) {
-			map.removeLayer(layer);
-		}
+let maplibreLoadPromise = null;
+const loadMaplibreGL = () => {
+	if (maplibreLoadPromise) return maplibreLoadPromise;
+
+	const loadScript = src => new Promise((resolve, reject) => {
+		const script = document.createElement('script');
+		script.src = src;
+		script.onload = resolve;
+		script.onerror = () => reject(new Error(`Nie udało się wczytać ${src}`));
+		document.head.appendChild(script);
+	});
+
+	const stylesheet = document.createElement('link');
+	stylesheet.rel = 'stylesheet';
+	stylesheet.href = '/vendor/maplibre/maplibre-gl.css';
+	document.head.appendChild(stylesheet);
+
+	maplibreLoadPromise = loadScript('/vendor/maplibre/maplibre-gl.js')
+		.then(() => loadScript('/vendor/maplibre/leaflet-maplibre-gl.js'))
+		.catch(err => {
+			maplibreLoadPromise = null;
+			throw err;
+		});
+
+	return maplibreLoadPromise;
+};
+
+const getOpenFreeMapLayer = async () => {
+	if (!baseMaps[OPENFREEMAP_NAME]) {
+		await loadMaplibreGL();
+		baseMaps[OPENFREEMAP_NAME] = L.maplibreGL({
+			style: 'https://tiles.openfreemap.org/styles/liberty',
+			attribution: 'Kafelki: &copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> Dane: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+		});
 	}
+	return baseMaps[OPENFREEMAP_NAME];
+};
+
+let baseMapRequestId = 0;
+const setBaseMap = async name => {
+	const requestId = ++baseMapRequestId;
+	const targetLayer = name === OPENFREEMAP_NAME ? await getOpenFreeMapLayer() : baseMaps[name];
+
+	if (requestId !== baseMapRequestId) return;
+
+	for (const layer of Object.values(baseMaps)) {
+		if (layer !== targetLayer && map.hasLayer(layer)) map.removeLayer(layer);
+	}
+	if (!map.hasLayer(targetLayer)) map.addLayer(targetLayer);
+
 	localStorage.setItem('baseMapSelected', name);
 };
+
+void setBaseMap(baseMapSelected).catch(err => {
+	console.error('Nie udało się ustawić mapy bazowej:', err);
+	const fallback = baseMaps[baseMapOrder[0]];
+	if (!map.hasLayer(fallback)) map.addLayer(fallback);
+});
 
 const nodeTypeIconNames = { 1: 'client', 2: 'repeater', 3: 'room-server', 4: 'sensor' };
 
@@ -431,6 +481,7 @@ const basemapToggle = document.getElementById('basemap-toggle');
 const basemapMenu = document.getElementById('basemap-menu');
 const settingsModal = initModal('settings-toggle', 'settings-overlay');
 const closeFiltersOnApplyCheckbox = document.getElementById('setting-close-filters-on-apply');
+const showOpenFreeMapCheckbox = document.getElementById('setting-show-openfreemap');
 const legendPanelUi = initLegendPanel();
 const searchInline = document.getElementById('search-form');
 const searchInput = document.getElementById('search-input');
@@ -450,21 +501,49 @@ const legendUpdatedAtEl = document.getElementById('legend-updated-at');
 
 const storedRegion = localStorage.getItem('regionSelected');
 
+const FILTERS_STORAGE_KEY = 'savedFilters';
+
+const loadSavedFilters = () => {
+	try {
+		return JSON.parse(localStorage.getItem(FILTERS_STORAGE_KEY)) ?? {};
+	} catch {
+		return {};
+	}
+};
+
+const savedFilters = loadSavedFilters();
+
 const state = {
 	search: '',
 	region: storedRegion === 'all' ? 'all' : 'pl',
-	nodeFilter: ['1', '2', '3', '4'],
-	freqFilter: [],
+	nodeFilter: savedFilters.nodeFilter ?? ['1', '2', '3', '4'],
+	freqFilter: savedFilters.freqFilter ?? [],
 	availableFreqs: [],
 	hasUnknownFreq: false,
-	includeUnknownFreq: true,
-	fromDate: '',
-	fromInsertDate: '',
-	clusteringZoom: 11,
+	includeUnknownFreq: savedFilters.includeUnknownFreq ?? true,
+	fromDate: savedFilters.fromDate ?? '',
+	fromInsertDate: savedFilters.fromInsertDate ?? '',
+	clusteringZoom: savedFilters.clusteringZoom ?? 11,
 	nodes: [],
 	nodesByType: {},
 	filteredNodes: [],
 };
+
+const saveFiltersToStorage = () => {
+	localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify({
+		nodeFilter: state.nodeFilter,
+		freqFilter: state.freqFilter,
+		includeUnknownFreq: state.includeUnknownFreq,
+		fromDate: state.fromDate,
+		fromInsertDate: state.fromInsertDate,
+		clusteringZoom: state.clusteringZoom,
+	}));
+};
+
+nodeTypeCheckboxes.forEach(cb => { cb.checked = state.nodeFilter.includes(cb.value); });
+fromDateInput.value = state.fromDate;
+fromInsertDateInput.value = state.fromInsertDate;
+clusteringZoomInput.value = state.clusteringZoom;
 
 const statsModal = initStatsModal({
 	getNodes: () => state.nodes,
@@ -644,7 +723,7 @@ const renderStats = () => {
 		<span class="pointer-help" title="Łączna liczba węzłów spełniających filtry">razem: <b>${nodes.length}</b></span>&nbsp;|
 		<svg class="icon pointer-help"><title>Liczba klientów spełniających filtry</title><use href="/icons/icons.svg#user"></use></svg><b>${clients}</b>&nbsp;|
 		<svg class="icon icon-filled pointer-help"><title>Liczba repeaterów spełniających filtry</title><use href="/icons/node-types.svg#repeater-plain"></use></svg><b>${repeaters}</b>&nbsp;|
-		<svg class="icon pointer-help"><title>Liczba serwerów pokoju spełniających filtry</title><use href="/icons/icons.svg#message"></use></svg><b>${roomServers}</b>`;
+		<svg class="icon icon-filled pointer-help"><title>Liczba serwerów pokoju spełniających filtry</title><use href="/icons/node-types.svg#room-server-plain"></use></svg><b>${roomServers}</b>`;
 
 	statsModal.render();
 };
@@ -720,6 +799,7 @@ const runFilterPass = () => {
 	updateFiltersActiveUI();
 	renderSearchResults();
 	renderStats();
+	saveFiltersToStorage();
 };
 
 let filterToast = null;
@@ -1049,11 +1129,15 @@ clusteringZoomInput.addEventListener('input', () => {
 	syncUrlParams();
 });
 
+clusteringZoomInput.addEventListener('change', saveFiltersToStorage);
+
 closeFiltersOnApplyCheckbox.checked = localStorage.getItem('closeFiltersOnApply') !== '0';
 
 closeFiltersOnApplyCheckbox.addEventListener('change', () => {
 	localStorage.setItem('closeFiltersOnApply', closeFiltersOnApplyCheckbox.checked ? '1' : '0');
 });
+
+showOpenFreeMapCheckbox.checked = showOpenFreeMap;
 
 applyFiltersBtn.addEventListener('click', () => {
 	applyFilters();
@@ -1121,20 +1205,40 @@ const renderBaseMapToggle = () => {
 };
 
 const renderBasemapMenu = () => {
-	basemapMenu.innerHTML = baseMapOrder.map(name => `<li data-basemap="${name}">${name}</li>`).join('');
+	basemapMenu.innerHTML = getBaseMapOrder().map(name => `<li data-basemap="${name}">${name}</li>`).join('');
 };
 
 renderBasemapMenu();
 renderBaseMapToggle();
+
+showOpenFreeMapCheckbox.addEventListener('change', () => {
+	showOpenFreeMap = showOpenFreeMapCheckbox.checked;
+	localStorage.setItem('showOpenFreeMap', showOpenFreeMap ? '1' : '0');
+	renderBasemapMenu();
+	renderBaseMapToggle();
+});
 
 basemapMenu.addEventListener('click', e => {
 	const li = e.target.closest('li');
 	if (!li) return;
 
 	currentBaseMap = li.dataset.basemap;
-	setBaseMap(currentBaseMap);
 	renderBaseMapToggle();
 	basemapMenu.hidden = true;
+
+	const loadingToast = currentBaseMap === OPENFREEMAP_NAME && !baseMaps[OPENFREEMAP_NAME]
+		? showToast('Wczytywanie mapy...', { duration: 0, status: 'loading' })
+		: null;
+
+	setBaseMap(currentBaseMap)
+		.then(() => {
+			if (loadingToast) updateToast(loadingToast, 'Mapa wczytana', { duration: 1000, status: 'success' });
+		})
+		.catch(err => {
+			console.error('Nie udało się ustawić mapy bazowej:', err);
+			if (loadingToast) updateToast(loadingToast, 'Nie udało się wczytać mapy', { status: 'error' });
+			else showToast('Nie udało się wczytać mapy', { status: 'error' });
+		});
 });
 
 basemapToggle.addEventListener('click', () => {

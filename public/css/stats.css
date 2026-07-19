@@ -47,7 +47,7 @@
 
 .stats-chip-label {
 	font-family: var(--font-mono);
-	font-size: 0.68rem;
+	font-size: 0.85rem;
 	letter-spacing: 0.06em;
 	text-transform: uppercase;
 	color: var(--text-muted);
@@ -93,7 +93,7 @@
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	max-height: 260px;
+	max-height: 420px;
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
