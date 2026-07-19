@@ -25,7 +25,7 @@ app.locals.domain = DOMAIN;
 app.locals.version = version;
 
 // Use middlewares
-app.use(helmet({ crossOriginResourcePolicy: false, contentSecurityPolicy: false, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }));
+app.use(helmet({ crossOriginResourcePolicy: false, contentSecurityPolicy: false }));
 app.use(express.static('public'));
 app.use(logger);
 if (isProd) app.use(globalLimiter);
