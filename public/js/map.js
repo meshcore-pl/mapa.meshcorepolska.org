@@ -372,14 +372,14 @@ const baseMapAttributions = {
 };
 
 const baseMapInfo = {
-	'CartoDB Dark': 'Ciemna mapa uliczna (CARTO). Darmowa, bez limitu zapytań, unikaj jednak bardzo dużego ruchu.',
-	'CartoDB Positron': 'Jasna, minimalistyczna mapa uliczna (CARTO). Darmowa, bez limitu zapytań.',
-	'OpenStreetMap': 'Standardowa mapa OpenStreetMap. Oficjalny serwer OSM, tylko normalne przeglądanie, zakaz cachowania/pobierania offline, ograniczona przepustowość.',
-	'Esri Satellite': 'Zdjęcia satelitarne (Esri World Imagery). Darmowe do użytku niekomercyjnego.',
-	'OpenTopoMap': 'Mapa topograficzna. Serwer społecznościowy o niskiej przepustowości, unikaj dużego ruchu.',
-	'CyclOSM': 'Mapa rowerowa oparta na OpenStreetMap. Serwer społecznościowy openstreetmap.fr, umiarkowany, rozsądny ruch.',
-	'Humanitarian OSM': 'Styl humanitarny OpenStreetMap (HOT). Serwer społecznościowy openstreetmap.fr, umiarkowany, rozsądny ruch.',
-	[OPENFREEMAP_NAME]: 'Wektorowa mapa uliczna (MapLibre). Darmowa, bez limitu zapytań, ale wymaga WebGL i większej mocy obliczeniowej urządzenia.',
+	'CartoDB Dark': 'Ciemna mapa uliczna od CARTO. Bezpłatna i bez deklarowanego limitu zapytań, ale nieprzeznaczona do obsługi bardzo dużego ruchu.',
+	'CartoDB Positron': 'Jasna, minimalistyczna mapa uliczna od CARTO. Bezpłatna i bez deklarowanego limitu zapytań, ale nieprzeznaczona do obsługi bardzo dużego ruchu.',
+	'OpenStreetMap': 'Standardowa mapa OpenStreetMap z oficjalnego serwera kafelków. Przeznaczona do zwykłego przeglądania, bez masowego pobierania, intensywnego buforowania i użytku offline.',
+	'Esri Satellite': 'Zdjęcia satelitarne z warstwy Esri World Imagery. Bezpłatne do zastosowań niekomercyjnych.',
+	'OpenTopoMap': 'Mapa topograficzna udostępniana przez serwer społecznościowy o ograniczonej przepustowości. Należy unikać generowania dużego ruchu.',
+	'CyclOSM': 'Mapa rowerowa oparta na danych OpenStreetMap. Korzysta z serwera społecznościowego openstreetmap.fr, dlatego należy zachować umiarkowany poziom ruchu.',
+	'Humanitarian OSM': 'Humanitarny styl mapy OpenStreetMap opracowany przez HOT. Korzysta z serwera społecznościowego openstreetmap.fr, dlatego należy zachować umiarkowany poziom ruchu.',
+	[OPENFREEMAP_NAME]: 'Wektorowa mapa uliczna wyświetlana przez MapLibre. Bezpłatna i bez deklarowanego limitu zapytań, ale wymaga obsługi WebGL i może bardziej obciążać urządzenie.',
 };
 
 const baseMapOrder = ['CartoDB Dark', 'CartoDB Positron', 'OpenStreetMap', 'Esri Satellite', 'OpenTopoMap', 'CyclOSM', 'Humanitarian OSM'];
