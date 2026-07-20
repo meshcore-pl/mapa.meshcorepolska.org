@@ -372,7 +372,7 @@ const baseMapAttributions = {
 	'OpenTopoMap': 'Kafelki: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA)',
 	'CyclOSM': `Kafelki: &copy; <a href="https://www.cyclosm.org">CyclOSM</a> &copy; ${OSM_COPYRIGHT_LINK}`,
 	'Humanitarian OSM': `Kafelki: &copy; <a href="https://www.hotosm.org">HOT</a> &copy; ${OSM_COPYRIGHT_LINK}`,
-	[OPENFREEMAP_NAME]: `Kafelki: &copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> Dane: &copy; ${OSM_COPYRIGHT_LINK}`,
+	[OPENFREEMAP_NAME]: `Kafelki: &copy; <a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org">OpenMapTiles</a> Dane: &copy; ${OSM_COPYRIGHT_LINK}`,
 };
 
 const CARTO_INFO = 'Bezpłatna i bez deklarowanego limitu zapytań, ale nieprzeznaczona do obsługi bardzo dużego ruchu.';
